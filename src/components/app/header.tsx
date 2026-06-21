@@ -1,17 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
-import { Search, Bell, Plus, Zap, Menu } from "lucide-react";
+import { Search, Bell, Plus, Zap, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem,
+  DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { useLayout } from "@/lib/layout-context";
@@ -22,10 +17,10 @@ interface HeaderProps {
 }
 
 const NOTIFICATIONS = [
-  { id: 1, type: "email", message: "Nouveau prospect : Marc Dupont (toiture 120m²)", time: "Il y a 5 min", unread: true },
-  { id: 2, type: "invoice", message: "Facture FAC-2024-004 en retard – Marc Dupont", time: "Il y a 2h", unread: true },
-  { id: 3, type: "quote", message: "Devis DEV-2024-002 consulté par Sophie Martin", time: "Il y a 3h", unread: true },
-  { id: 4, type: "payment", message: "Paiement reçu – Antoine Leroy (CHF 19'458)", time: "Il y a 4h", unread: false },
+  { id: 1, message: "Nouveau prospect : Marc Dupont (toiture 120m²)", time: "5 min", unread: true },
+  { id: 2, message: "Facture FAC-2024-004 en retard de 14 jours", time: "2h", unread: true },
+  { id: 3, message: "Devis DEV-2024-002 consulté par Sophie Martin", time: "3h", unread: true },
+  { id: 4, message: "Paiement reçu – Antoine Leroy (CHF 19'458)", time: "4h", unread: false },
 ];
 
 export function Header({ title, subtitle }: HeaderProps) {
@@ -34,98 +29,89 @@ export function Header({ title, subtitle }: HeaderProps) {
   const unreadCount = NOTIFICATIONS.filter((n) => n.unread).length;
 
   return (
-    <header className="h-16 border-b border-border flex items-center justify-between px-4 lg:px-6 bg-background/80 backdrop-blur-sm sticky top-0 z-30">
+    <header className="h-14 border-b border-border flex items-center justify-between px-4 lg:px-5 bg-background/95 backdrop-blur-sm sticky top-0 z-30">
       <div className="flex items-center gap-3">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="lg:hidden shrink-0"
-          onClick={toggleMobileSidebar}
-        >
-          <Menu className="w-5 h-5" />
+        <Button variant="ghost" size="icon" className="lg:hidden" onClick={toggleMobileSidebar}>
+          <Menu className="w-4 h-4" />
         </Button>
         <div>
-          <h1 className="text-base lg:text-lg font-semibold leading-none">{title}</h1>
-          {subtitle && <p className="text-xs text-muted-foreground mt-0.5 hidden sm:block">{subtitle}</p>}
+          <h1 className="text-sm font-semibold">{title}</h1>
+          {subtitle && <p className="text-xs text-muted-foreground hidden sm:block">{subtitle}</p>}
         </div>
       </div>
 
-      <div className="flex items-center gap-1.5 lg:gap-2">
+      <div className="flex items-center gap-1">
         {/* Search */}
-        <div className={cn("relative transition-all duration-300", searchOpen ? "w-64" : "w-auto")}>
-          {searchOpen ? (
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input
-                autoFocus
-                placeholder="Rechercher..."
-                className="pl-9 h-9 w-64"
-                onBlur={() => setSearchOpen(false)}
-              />
-            </div>
-          ) : (
-            <Button variant="ghost" size="icon" onClick={() => setSearchOpen(true)}>
-              <Search className="w-4 h-4" />
-            </Button>
-          )}
-        </div>
+        {searchOpen ? (
+          <div className="relative flex items-center">
+            <Search className="absolute left-2.5 w-3.5 h-3.5 text-muted-foreground" />
+            <Input
+              autoFocus
+              placeholder="Rechercher..."
+              className="pl-8 h-8 w-52 text-xs"
+              onBlur={() => setSearchOpen(false)}
+            />
+            <button onClick={() => setSearchOpen(false)} className="absolute right-2 text-muted-foreground hover:text-foreground">
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        ) : (
+          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setSearchOpen(true)}>
+            <Search className="w-4 h-4" />
+          </Button>
+        )}
 
         {/* Notifications */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="relative">
+            <Button variant="ghost" size="icon" className="h-8 w-8 relative">
               <Bell className="w-4 h-4" />
               {unreadCount > 0 && (
-                <span className="absolute top-1 right-1 w-4 h-4 bg-violet-500 rounded-full text-[9px] font-bold text-white flex items-center justify-center">
-                  {unreadCount}
-                </span>
+                <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-violet-500 rounded-full" />
               )}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-80">
-            <DropdownMenuLabel className="flex items-center justify-between">
+            <DropdownMenuLabel className="flex items-center justify-between text-xs">
               Notifications
-              <Badge variant="purple" className="text-[10px]">{unreadCount} nouvelles</Badge>
+              <span className="text-[10px] text-muted-foreground font-normal">{unreadCount} nouvelles</span>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             {NOTIFICATIONS.map((n) => (
-              <DropdownMenuItem key={n.id} className="flex items-start gap-3 py-3">
-                <div className={cn(
-                  "w-2 h-2 rounded-full mt-1.5 shrink-0",
-                  n.unread ? "bg-violet-400" : "bg-transparent"
-                )} />
+              <DropdownMenuItem key={n.id} className="flex items-start gap-2.5 py-2.5">
+                <div className={cn("w-1.5 h-1.5 rounded-full mt-1.5 shrink-0", n.unread ? "bg-violet-500" : "bg-transparent border border-border")} />
                 <div className="flex-1 min-w-0">
                   <p className="text-xs leading-relaxed">{n.message}</p>
-                  <p className="text-[10px] text-muted-foreground mt-0.5">{n.time}</p>
+                  <p className="text-[10px] text-muted-foreground mt-0.5">Il y a {n.time}</p>
                 </div>
               </DropdownMenuItem>
             ))}
             <DropdownMenuSeparator />
             <DropdownMenuItem className="justify-center text-xs text-violet-400">
-              Voir toutes les notifications
+              Toutes les notifications
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
 
-        {/* Quick Action */}
+        {/* Quick Create */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="gradient" size="sm" className="gap-1.5">
-              <Plus className="w-4 h-4" />
-              <span className="hidden sm:inline">Nouveau</span>
+            <Button size="sm" className="h-8 gap-1.5">
+              <Plus className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline text-xs">Nouveau</span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Créer</DropdownMenuLabel>
+            <DropdownMenuLabel className="text-xs">Créer</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <Zap className="w-4 h-4 text-violet-400" />
+            <DropdownMenuItem className="text-xs">
+              <Zap className="w-3.5 h-3.5 text-violet-400" />
               Devis avec IA
             </DropdownMenuItem>
-            <DropdownMenuItem>Devis manuel</DropdownMenuItem>
-            <DropdownMenuItem>Facture</DropdownMenuItem>
-            <DropdownMenuItem>Contact</DropdownMenuItem>
-            <DropdownMenuItem>Tâche</DropdownMenuItem>
+            <DropdownMenuItem className="text-xs">Devis manuel</DropdownMenuItem>
+            <DropdownMenuItem className="text-xs">Facture</DropdownMenuItem>
+            <DropdownMenuItem className="text-xs">Contact</DropdownMenuItem>
+            <DropdownMenuItem className="text-xs">Tâche</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

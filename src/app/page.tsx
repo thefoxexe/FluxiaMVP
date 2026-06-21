@@ -3,720 +3,418 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import {
-  Zap, Mail, Users, FileText, CreditCard, BarChart3, Bot, ArrowRight,
-  Check, ChevronDown, Star, Globe, Shield, Clock, TrendingUp, Sparkles,
-  Building2, Send, Eye, Pencil, BellRing, X, Menu, Play,
-  ChevronRight, MessageSquare, Calendar, Workflow, RefreshCw
+  Zap, ArrowRight, Check, ChevronDown, BarChart3, FileText,
+  CreditCard, Users, CheckSquare, Workflow, Sparkles, Mail,
+  Shield, Globe, Star, Menu, X
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-
-const DEMO_STEPS = [
-  {
-    delay: 0,
-    type: "email",
-    content: '"Bonjour, j\'aimerais un devis pour la rénovation d\'une toiture de 120m²."',
-    sender: "Marc Dupont <marc@dupont-batiment.ch>",
-  },
-  {
-    delay: 1200,
-    type: "ai",
-    content: "Analyse de l'email en cours...",
-    icon: "scan",
-  },
-  {
-    delay: 2400,
-    type: "action",
-    content: "Prospect créé : Marc Dupont – Dupont Bâtiment SA",
-    icon: "user",
-    status: "done",
-  },
-  {
-    delay: 3400,
-    type: "action",
-    content: "Besoin identifié : Toiture 120m² – Urgent",
-    icon: "search",
-    status: "done",
-  },
-  {
-    delay: 4400,
-    type: "action",
-    content: "Devis DEV-2024-001 généré : CHF 8'400",
-    icon: "file",
-    status: "done",
-  },
-  {
-    delay: 5400,
-    type: "action",
-    content: "Email de réponse préparé avec devis en PJ",
-    icon: "send",
-    status: "done",
-  },
-  {
-    delay: 6400,
-    type: "action",
-    content: "Relances programmées : J+3, J+7, J+14",
-    icon: "bell",
-    status: "done",
-  },
-  {
-    delay: 7200,
-    type: "result",
-    content: "Tout ça en moins de 60 secondes.",
-  },
-];
 
 const FEATURES = [
   {
-    icon: Mail,
+    icon: Sparkles,
     title: "Inbox IA",
-    description: "Tous vos emails classifiés, résumés et traités par l'IA. Répondez en un clic.",
-    color: "text-violet-400",
-    bg: "bg-violet-500/10",
+    description: "Vos emails classifiés, résumés et traités automatiquement. L'IA rédige les réponses, vous n'avez qu'à valider.",
   },
   {
     icon: Users,
-    title: "CRM Intelligent",
-    description: "Pipeline de vente avec scoring IA, déplacement automatique des prospects et détection d'opportunités.",
-    color: "text-cyan-400",
-    bg: "bg-cyan-500/10",
+    title: "CRM intelligent",
+    description: "Scoring des prospects, suivi du pipeline, historique complet. L'IA identifie les opportunités à ne pas manquer.",
   },
   {
     icon: FileText,
-    title: "Devis & Contrats",
-    description: "Générez des devis professionnels depuis un email en 30 secondes. Signature électronique intégrée.",
-    color: "text-green-400",
-    bg: "bg-green-500/10",
+    title: "Devis en 30 secondes",
+    description: "Générez des devis professionnels depuis un email ou une description. Envoyez et signez directement depuis Fluxia.",
   },
   {
     icon: CreditCard,
-    title: "Facturation Suisse",
-    description: "QR-Facture, TVA, multi-devises. Transformation automatique devis → facture à l'acceptation.",
-    color: "text-yellow-400",
-    bg: "bg-yellow-500/10",
+    title: "Facturation automatisée",
+    description: "QR-Factures conformes, relances automatiques, suivi des paiements en temps réel.",
   },
   {
-    icon: BarChart3,
-    title: "Tableau de bord financier",
-    description: "CA, cashflow, prévisions. Toutes vos métriques en temps réel sur un seul écran.",
-    color: "text-orange-400",
-    bg: "bg-orange-500/10",
+    icon: CheckSquare,
+    title: "Tâches & Calendrier",
+    description: "Synchronisé avec Google Calendar et Outlook. L'IA crée des tâches depuis vos emails automatiquement.",
   },
   {
     icon: Workflow,
-    title: "Automatisations",
-    description: "Workflows no-code : relances, notifications, création de tâches. Votre business tourne seul.",
-    color: "text-pink-400",
-    bg: "bg-pink-500/10",
+    title: "Automatisations no-code",
+    description: "Créez des workflows sans code : réponse auto aux prospects, suivi des devis, alertes impayés.",
   },
   {
-    icon: Bot,
-    title: "Agent IA Autonome",
-    description: "L'IA répond aux emails, crée les devis, relance les prospects. Vous supervisez, l'IA exécute.",
-    color: "text-indigo-400",
-    bg: "bg-indigo-500/10",
+    icon: BarChart3,
+    title: "Rapports IA",
+    description: "CA, cashflow, pipeline, taux de conversion. Rapport hebdomadaire généré automatiquement.",
   },
   {
-    icon: Calendar,
-    title: "Calendrier & Tâches",
-    description: "Synchronisation Google / Outlook. Tâches créées automatiquement depuis vos emails et devis.",
-    color: "text-teal-400",
-    bg: "bg-teal-500/10",
+    icon: Mail,
+    title: "Relances intelligentes",
+    description: "L'IA détecte les impayés et envoie des relances personnalisées au bon moment.",
+  },
+];
+
+const PLANS = [
+  {
+    name: "Solo",
+    price: 49,
+    description: "Pour les indépendants",
+    features: ["1 utilisateur", "500 contacts", "Devis & Factures illimités", "Inbox IA", "Automatisations (5 actives)", "Support email"],
+    highlighted: false,
+    cta: "Commencer",
+  },
+  {
+    name: "Team",
+    price: 99,
+    description: "Pour les petites équipes",
+    features: ["3 utilisateurs", "2 000 contacts", "Tout Solo inclus", "CRM avancé + scoring", "Automatisations illimitées", "Rapports IA", "Support prioritaire"],
+    highlighted: true,
+    cta: "Commencer — le plus populaire",
+  },
+  {
+    name: "Business",
+    price: 199,
+    description: "Pour les agences & PME",
+    features: ["10 utilisateurs", "Contacts illimités", "Tout Team inclus", "API & Webhooks", "Intégrations Slack/Teams", "Manager de compte dédié", "SLA 99.9%"],
+    highlighted: false,
+    cta: "Contacter les ventes",
   },
 ];
 
 const COMPARISON = [
-  { feature: "IA native intégrée", fluxia: true, bexio: false, hubspot: false, zoho: false, odoo: false },
-  { feature: "Agent IA autonome", fluxia: true, bexio: false, hubspot: false, zoho: false, odoo: false },
-  { feature: "Inbox IA", fluxia: true, bexio: false, hubspot: false, zoho: false, odoo: false },
-  { feature: "Génération devis IA", fluxia: true, bexio: false, hubspot: false, zoho: false, odoo: false },
-  { feature: "Relances automatiques IA", fluxia: true, bexio: false, hubspot: false, zoho: false, odoo: false },
-  { feature: "CRM + Facturation", fluxia: true, bexio: true, hubspot: false, zoho: true, odoo: true },
-  { feature: "QR-Facture Suisse", fluxia: true, bexio: true, hubspot: false, zoho: false, odoo: false },
-  { feature: "Prix accessible", fluxia: true, bexio: false, hubspot: false, zoho: true, odoo: false },
-];
-
-const TESTIMONIALS = [
-  {
-    name: "Marc Tissot",
-    company: "Tissot Architecture SA",
-    comment: "Fluxia a transformé ma façon de travailler. Je passais 3h par jour sur les emails et les devis. Maintenant c'est 30 minutes maximum. L'IA gère tout.",
-    rating: 5,
-    avatar: "MT",
-    color: "from-violet-500 to-indigo-600",
-  },
-  {
-    name: "Laure Bonnet",
-    company: "Studio LB Design",
-    comment: "En 2 mois, mon taux de conversion est passé de 35% à 62%. Les relances automatiques font une vraie différence. Je ne laisse plus passer une opportunité.",
-    rating: 5,
-    avatar: "LB",
-    color: "from-cyan-500 to-blue-600",
-  },
-  {
-    name: "David Müller",
-    company: "Müller Consulting GmbH",
-    comment: "J'ai remplacé Bexio, HubSpot et Notion avec Fluxia. Un seul outil, tout centralisé, et l'IA en bonus. Je recommande à tous les indépendants.",
-    rating: 5,
-    avatar: "DM",
-    color: "from-green-500 to-teal-600",
-  },
+  { feature: "Inbox IA", fluxia: true, bexio: false, hubspot: false, note: "Exclusif Fluxia" },
+  { feature: "Devis IA en 30s", fluxia: true, bexio: false, hubspot: false, note: "Exclusif Fluxia" },
+  { feature: "Automatisations no-code", fluxia: true, bexio: false, hubspot: true, note: "" },
+  { feature: "QR-Factures suisses", fluxia: true, bexio: true, hubspot: false, note: "" },
+  { feature: "CRM + pipeline", fluxia: true, bexio: false, hubspot: true, note: "" },
+  { feature: "Rapport IA hebdo", fluxia: true, bexio: false, hubspot: false, note: "Exclusif Fluxia" },
+  { feature: "Prix pour PME suisse", fluxia: true, bexio: false, hubspot: false, note: "Bexio dès CHF 199/mois" },
 ];
 
 const FAQS = [
-  {
-    question: "Puis-je importer mes données existantes ?",
-    answer: "Oui, Fluxia permet d'importer vos clients, factures et devis depuis Excel, CSV, ou directement depuis Bexio, HubSpot et Zoho via nos connecteurs natifs.",
-  },
-  {
-    question: "Mes données sont-elles en sécurité ?",
-    answer: "Vos données sont hébergées en Suisse (Zurich), chiffrées en transit et au repos. Nous sommes conformes RGPD et LPD suisse. Chaque organisation est complètement isolée.",
-  },
-  {
-    question: "L'IA peut-elle vraiment envoyer des emails à ma place ?",
-    answer: "Oui, en mode Agent Autonome. L'IA rédige et envoie les emails, crée les devis et relance les prospects. Vous configurez le niveau de supervision : validation systématique, validation occasionnelle, ou autonome complet.",
-  },
-  {
-    question: "Que se passe-t-il après les 14 jours d'essai ?",
-    answer: "Vous choisissez votre plan ou votre compte passe en mode lecture seule (vos données sont préservées). Aucune carte bancaire requise pour l'essai.",
-  },
-  {
-    question: "Y a-t-il une application mobile ?",
-    answer: "L'application web est entièrement responsive. Des applications iOS et Android natives sont prévues pour Q3 2024.",
-  },
-  {
-    question: "Puis-je connecter Gmail et Outlook simultanément ?",
-    answer: "Oui, Fluxia supporte plusieurs boîtes email simultanément : Gmail, Outlook/Exchange, et tout serveur IMAP. Tous vos emails dans une seule Inbox IA.",
-  },
+  { q: "Fluxia est-il conforme aux lois suisses ?", a: "Oui. Fluxia est hébergé en Suisse, conforme à la LPD, et génère des QR-Factures conformes aux standards SwissQR. TVA suisse (7.7%) automatiquement gérée." },
+  { q: "Puis-je importer mes données existantes ?", a: "Oui, importez vos contacts depuis Excel, CSV, ou directement depuis Bexio. Notre équipe vous accompagne lors de l'onboarding." },
+  { q: "Y a-t-il une période d'essai ?", a: "14 jours gratuits, sans carte bancaire. Toutes les fonctionnalités incluses." },
+  { q: "Comment fonctionne l'IA ?", a: "Fluxia utilise des modèles d'IA de pointe (Claude, GPT-4) pour analyser vos emails, générer des devis et automatiser les relances. Vos données ne sont jamais utilisées pour entraîner les modèles." },
+  { q: "Puis-je annuler à tout moment ?", a: "Oui, sans frais ni engagement. Votre abonnement reste actif jusqu'à la fin de la période payée." },
 ];
 
-const PRICING = [
-  {
-    name: "Solo",
-    price: "29",
-    description: "Pour les indépendants et freelances",
-    features: [
-      "1 utilisateur",
-      "CRM illimité",
-      "Inbox IA (1 boîte)",
-      "Devis & Factures",
-      "QR-Facture Suisse",
-      "Assistant IA",
-      "Support email",
-    ],
-    cta: "Démarrer l'essai gratuit",
-    popular: false,
-    color: "border-border",
-  },
-  {
-    name: "Team",
-    price: "79",
-    description: "Pour les petites équipes en croissance",
-    features: [
-      "10 utilisateurs",
-      "Tout du plan Solo",
-      "Inbox IA (5 boîtes)",
-      "Automatisations avancées",
-      "Pipeline de vente IA",
-      "Rapports & Analytics",
-      "Relances automatiques IA",
-      "Support prioritaire",
-    ],
-    cta: "Démarrer l'essai gratuit",
-    popular: true,
-    color: "border-violet-500/50",
-  },
-  {
-    name: "Business",
-    price: "199",
-    description: "Pour les PME et agences établies",
-    features: [
-      "50 utilisateurs",
-      "Tout du plan Team",
-      "Inbox IA illimitée",
-      "Agent IA autonome",
-      "API & Webhooks",
-      "Reporting avancé",
-      "Workflows personnalisés",
-      "Gestionnaire de compte dédié",
-    ],
-    cta: "Démarrer l'essai gratuit",
-    popular: false,
-    color: "border-border",
-  },
-];
+function CheckIcon() {
+  return (
+    <div className="w-4 h-4 rounded-full bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center shrink-0">
+      <Check className="w-2.5 h-2.5 text-emerald-400" strokeWidth={2.5} />
+    </div>
+  );
+}
+
+function CrossIcon() {
+  return (
+    <div className="w-4 h-4 rounded-full bg-secondary flex items-center justify-center shrink-0">
+      <X className="w-2.5 h-2.5 text-muted-foreground/40" strokeWidth={2.5} />
+    </div>
+  );
+}
 
 export default function LandingPage() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [demoStep, setDemoStep] = useState(-1);
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
-  const [demoRunning, setDemoRunning] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const runDemo = () => {
-    if (demoRunning) return;
-    setDemoRunning(true);
-    setDemoStep(0);
-    DEMO_STEPS.forEach((step, i) => {
-      setTimeout(() => {
-        setDemoStep(i);
-        if (i === DEMO_STEPS.length - 1) {
-          setTimeout(() => setDemoRunning(false), 2000);
-        }
-      }, step.delay);
-    });
-  };
-
   return (
-    <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
-      {/* Navigation */}
-      <nav className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        scrolled ? "glass border-b border-border" : "bg-transparent"
+    <div className="min-h-screen bg-background text-foreground">
+      {/* ── NAV ── */}
+      <header className={cn(
+        "fixed top-0 inset-x-0 z-50 border-b transition-colors duration-200",
+        scrolled ? "bg-background/95 backdrop-blur border-border" : "bg-transparent border-transparent"
       )}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center">
-                <Zap className="w-4 h-4 text-white" />
-              </div>
-              <span className="text-lg font-bold text-gradient">Fluxia</span>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2 shrink-0">
+            <div className="w-7 h-7 rounded-lg bg-violet-600 flex items-center justify-center">
+              <Zap className="w-3.5 h-3.5 text-white" />
             </div>
+            <span className="font-semibold text-sm">Fluxia</span>
+          </Link>
 
-            <div className="hidden md:flex items-center gap-8">
-              {["Fonctionnalités", "Tarifs", "Comparaison", "FAQ"].map((item) => (
-                <a
-                  key={item}
-                  href={`#${item.toLowerCase()}`}
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  {item}
-                </a>
-              ))}
-            </div>
-
-            <div className="hidden md:flex items-center gap-3">
-              <Link href="/login">
-                <Button variant="ghost" size="sm">Connexion</Button>
-              </Link>
-              <Link href="/register">
-                <Button variant="gradient" size="sm">
-                  Essai gratuit 14 jours
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </Button>
-              </Link>
-            </div>
-
-            <button
-              className="md:hidden p-2 text-muted-foreground"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
-          </div>
-        </div>
-
-        {mobileMenuOpen && (
-          <div className="md:hidden glass border-b border-border px-4 pb-4 space-y-3">
+          {/* Desktop nav */}
+          <nav className="hidden md:flex items-center gap-6">
             {["Fonctionnalités", "Tarifs", "Comparaison", "FAQ"].map((item) => (
               <a
                 key={item}
                 href={`#${item.toLowerCase()}`}
-                className="block text-sm text-muted-foreground py-2"
-                onClick={() => setMobileMenuOpen(false)}
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
                 {item}
               </a>
             ))}
-            <div className="flex gap-2 pt-2">
-              <Link href="/login" className="flex-1">
-                <Button variant="outline" size="sm" className="w-full">Connexion</Button>
-              </Link>
-              <Link href="/register" className="flex-1">
-                <Button variant="gradient" size="sm" className="w-full">Essai gratuit</Button>
-              </Link>
-            </div>
+          </nav>
+
+          <div className="flex items-center gap-2">
+            <Link href="/login" className="hidden sm:block text-sm text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5">
+              Connexion
+            </Link>
+            <Link href="/register">
+              <Button size="sm" className="h-8 text-xs">Essai gratuit</Button>
+            </Link>
+            <button
+              className="md:hidden p-2 text-muted-foreground hover:text-foreground"
+              onClick={() => setMobileNavOpen(!mobileNavOpen)}
+            >
+              {mobileNavOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile nav dropdown */}
+        {mobileNavOpen && (
+          <div className="md:hidden border-t border-border bg-background px-4 py-3 space-y-1">
+            {["Fonctionnalités", "Tarifs", "Comparaison", "FAQ"].map((item) => (
+              <a
+                key={item}
+                href={`#${item.toLowerCase()}`}
+                className="block py-2 text-sm text-muted-foreground hover:text-foreground"
+                onClick={() => setMobileNavOpen(false)}
+              >
+                {item}
+              </a>
+            ))}
+            <Link href="/login" className="block py-2 text-sm text-muted-foreground hover:text-foreground" onClick={() => setMobileNavOpen(false)}>
+              Connexion
+            </Link>
           </div>
         )}
-      </nav>
+      </header>
 
-      {/* Hero Section */}
-      <section className="relative pt-32 pb-20 px-4 mesh-bg overflow-hidden">
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-violet-600/10 rounded-full blur-3xl animate-pulse" />
-          <div className="absolute top-1/3 right-1/4 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "1s" }} />
-          <div className="absolute bottom-1/4 left-1/3 w-80 h-80 bg-indigo-600/8 rounded-full blur-3xl" />
+      {/* ── HERO ── */}
+      <section className="pt-28 pb-20 px-4 sm:px-6 text-center max-w-4xl mx-auto">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-violet-500/30 bg-violet-500/10 text-violet-400 text-xs font-medium mb-6">
+          <Sparkles className="w-3 h-3" />
+          Nouveau — Inbox IA disponible
         </div>
 
-        <div className="relative max-w-5xl mx-auto text-center">
-          <Badge variant="purple" className="mb-6 px-4 py-1.5 text-sm font-medium">
-            <Sparkles className="w-3.5 h-3.5 mr-1" />
-            Nouveau : Agent IA v3 disponible en bêta
-          </Badge>
+        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6 text-balance">
+          Le système d'exploitation{" "}
+          <span className="text-gradient">IA</span>{" "}
+          pour votre business
+        </h1>
 
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6 leading-tight tracking-tight">
-            Votre entreprise
-            <br />
-            <span className="text-gradient">pilotée par l'IA.</span>
-          </h1>
+        <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto mb-8 text-balance">
+          CRM, devis, factures, relances et automatisations — tout en un. L'IA fait le travail répétitif,
+          vous vous concentrez sur vos clients.
+        </p>
 
-          <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
-            Centralisez emails, devis, clients, factures, trésorerie et automatisations
-            dans une seule plateforme. Sans jongler entre 7 outils différents.
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-            <Link href="/register">
-              <Button variant="gradient" size="xl" className="group">
-                Essai gratuit 14 jours
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </Button>
-            </Link>
-            <Button variant="outline" size="xl" onClick={runDemo} disabled={demoRunning} className="gap-2">
-              <Play className="w-4 h-4" />
-              Voir la démonstration
+        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <Link href="/register">
+            <Button size="xl" className="gap-2 w-full sm:w-auto">
+              Démarrer gratuitement
+              <ArrowRight className="w-4 h-4" />
             </Button>
-          </div>
+          </Link>
+          <Link href="#fonctionnalités">
+            <Button variant="outline" size="xl" className="w-full sm:w-auto">
+              Voir les fonctionnalités
+            </Button>
+          </Link>
+        </div>
 
-          <p className="text-sm text-muted-foreground mb-12">
-            Aucune carte bancaire requise · Annulation à tout moment · Support en français
-          </p>
+        <p className="text-xs text-muted-foreground mt-4">
+          14 jours gratuits · Sans carte bancaire · Annulable à tout moment
+        </p>
 
-          {/* Dashboard Preview */}
-          <div className="relative mx-auto max-w-5xl">
-            <div className="rounded-2xl border border-border bg-card/50 p-1 shadow-2xl shadow-violet-500/10">
-              <div className="rounded-xl bg-card overflow-hidden">
-                <div className="flex items-center gap-2 px-4 py-3 border-b border-border bg-muted/30">
-                  <div className="flex gap-1.5">
-                    <div className="w-3 h-3 rounded-full bg-red-500/60" />
-                    <div className="w-3 h-3 rounded-full bg-yellow-500/60" />
-                    <div className="w-3 h-3 rounded-full bg-green-500/60" />
-                  </div>
-                  <div className="flex-1 mx-4 h-6 rounded-md bg-background/50 border border-border flex items-center px-3">
-                    <span className="text-xs text-muted-foreground">app.fluxia.ch/dashboard</span>
-                  </div>
-                </div>
-                <div className="p-6 grid grid-cols-4 gap-4">
-                  {[
-                    { label: "CA du mois", value: "CHF 47'850", trend: "+12.4%", color: "text-green-400" },
-                    { label: "Factures en attente", value: "CHF 34'734", trend: "4 factures", color: "text-yellow-400" },
-                    { label: "Devis en cours", value: "CHF 25'208", trend: "2 devis", color: "text-violet-400" },
-                    { label: "Taux conversion", value: "68.5%", trend: "+8.2%", color: "text-cyan-400" },
-                  ].map((stat) => (
-                    <div key={stat.label} className="bg-background/60 rounded-lg p-4 border border-border">
-                      <div className="text-xs text-muted-foreground mb-2">{stat.label}</div>
-                      <div className="text-lg font-semibold mb-1">{stat.value}</div>
-                      <div className={cn("text-xs font-medium", stat.color)}>{stat.trend}</div>
-                    </div>
-                  ))}
-                </div>
-                <div className="px-6 pb-6 grid grid-cols-3 gap-4">
-                  <div className="col-span-2 bg-background/60 rounded-lg p-4 border border-border h-32 flex flex-col justify-between">
-                    <div className="text-xs text-muted-foreground font-medium">Revenus 6 derniers mois</div>
-                    <div className="flex items-end gap-1 h-16">
-                      {[45, 55, 40, 65, 75, 90].map((h, i) => (
-                        <div key={i} className="flex-1 rounded-sm bg-gradient-to-t from-violet-600 to-violet-400" style={{ height: `${h}%`, opacity: 0.7 + i * 0.05 }} />
-                      ))}
-                    </div>
-                  </div>
-                  <div className="bg-background/60 rounded-lg p-4 border border-border h-32">
-                    <div className="text-xs text-muted-foreground font-medium mb-3">Inbox IA</div>
-                    <div className="space-y-2">
-                      {["Marc Dupont – Devis toiture", "Sophie Martin – Questions", "URGENT – Site hors ligne"].map((m, i) => (
-                        <div key={i} className="flex items-center gap-2">
-                          <div className={cn("w-1.5 h-1.5 rounded-full shrink-0", i === 2 ? "bg-red-400" : "bg-violet-400")} />
-                          <span className="text-xs text-muted-foreground truncate">{m}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
+        {/* Stats */}
+        <div className="grid grid-cols-3 gap-4 mt-16 pt-8 border-t border-border max-w-lg mx-auto">
+          {[
+            { value: "30s", label: "pour créer un devis" },
+            { value: "8h", label: "économisées / semaine" },
+            { value: "68%", label: "taux de conversion" },
+          ].map((s) => (
+            <div key={s.label}>
+              <div className="text-2xl sm:text-3xl font-bold text-foreground">{s.value}</div>
+              <div className="text-[11px] text-muted-foreground mt-0.5">{s.label}</div>
             </div>
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-violet-600/20 to-cyan-600/20 rounded-2xl blur -z-10" />
-          </div>
+          ))}
         </div>
       </section>
 
-      {/* Stats Banner */}
-      <section className="border-y border-border bg-secondary/30 py-8">
-        <div className="max-w-5xl mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            {[
-              { value: "3h → 30min", label: "Gain quotidien moyen" },
-              { value: "+35%", label: "Taux de conversion" },
-              { value: "< 60s", label: "Devis généré par IA" },
-              { value: "98%", label: "Satisfaction client" },
-            ].map((s) => (
-              <div key={s.label}>
-                <div className="text-2xl font-bold text-gradient mb-1">{s.value}</div>
-                <div className="text-sm text-muted-foreground">{s.label}</div>
-              </div>
-            ))}
+      {/* ── APP PREVIEW ── */}
+      <section className="px-4 sm:px-6 pb-20 max-w-5xl mx-auto">
+        <div className="rounded-xl border border-border bg-card overflow-hidden shadow-2xl shadow-black/40">
+          {/* Fake toolbar */}
+          <div className="flex items-center gap-2 px-4 py-3 border-b border-border bg-secondary/40">
+            <div className="w-3 h-3 rounded-full bg-red-500/60" />
+            <div className="w-3 h-3 rounded-full bg-amber-500/60" />
+            <div className="w-3 h-3 rounded-full bg-emerald-500/60" />
+            <div className="flex-1 mx-4 h-6 rounded-md bg-background/60 border border-border flex items-center px-3">
+              <span className="text-[11px] text-muted-foreground">app.fluxia.ch/dashboard</span>
+            </div>
           </div>
-        </div>
-      </section>
-
-      {/* Problem Section */}
-      <section id="fonctionnalités" className="py-24 px-4">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-16">
-            <Badge variant="outline" className="mb-4 text-muted-foreground">Le problème</Badge>
-            <h2 className="text-4xl font-bold mb-4">Votre quotidien ressemble à ça.</h2>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              7 outils. Des données dispersées. Des opportunités perdues. Un temps précieux gaspillé.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="space-y-4">
-              {[
-                { tool: "Gmail / Outlook", pain: "Emails non classifiés, relances oubliées" },
-                { tool: "Excel", pain: "Suivi manuel des devis et factures" },
-                { tool: "HubSpot", pain: "CRM complexe et hors de prix" },
-                { tool: "Bexio", pain: "Facturation sans CRM ni IA" },
-                { tool: "Notion / Trello", pain: "Tâches et notes dispersées" },
-                { tool: "WhatsApp", pain: "Conversations clients non structurées" },
-                { tool: "Calendly", pain: "Un outil de plus à synchroniser" },
-              ].map((item, i) => (
-                <div key={i} className="flex items-start gap-4 p-4 rounded-lg border border-red-500/10 bg-red-500/5">
-                  <div className="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center shrink-0 mt-0.5">
-                    <X className="w-4 h-4 text-red-400" />
-                  </div>
-                  <div>
-                    <div className="font-semibold text-sm">{item.tool}</div>
-                    <div className="text-sm text-muted-foreground">{item.pain}</div>
-                  </div>
+          {/* Dashboard preview */}
+          <div className="flex h-[380px] sm:h-[480px]">
+            {/* Sidebar preview */}
+            <div className="hidden sm:flex w-48 border-r border-border flex-col p-3 gap-1 bg-card">
+              {["Dashboard", "Inbox IA", "CRM", "Devis", "Factures", "Tâches"].map((item, i) => (
+                <div key={item} className={cn(
+                  "flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs",
+                  i === 0 ? "bg-violet-600/10 text-violet-400" : "text-muted-foreground"
+                )}>
+                  <div className={cn("w-3.5 h-3.5 rounded-sm", i === 0 ? "bg-violet-600/30" : "bg-secondary")} />
+                  {item}
+                  {i === 1 && <span className="ml-auto text-[9px] bg-violet-600 text-white px-1 rounded">4</span>}
                 </div>
               ))}
             </div>
-
-            <div className="relative">
-              <div className="p-8 rounded-2xl border border-violet-500/20 bg-gradient-to-br from-violet-500/5 to-indigo-500/5">
-                <div className="text-center mb-6">
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center mx-auto mb-4 glow-purple">
-                    <Zap className="w-8 h-8 text-white" />
+            {/* Main content preview */}
+            <div className="flex-1 p-4 overflow-hidden">
+              <div className="text-xs font-medium mb-3 text-foreground">Dashboard</div>
+              {/* Stats grid */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
+                {[
+                  { label: "CA du mois", value: "CHF 47'850", color: "text-emerald-400" },
+                  { label: "Impayées", value: "CHF 34'734", color: "text-amber-400" },
+                  { label: "Conversion", value: "68.5%", color: "text-violet-400" },
+                  { label: "Cash", value: "CHF 89'200", color: "text-blue-400" },
+                ].map((s) => (
+                  <div key={s.label} className="bg-secondary/50 border border-border rounded-lg p-2.5">
+                    <div className={cn("text-sm font-semibold", s.color)}>{s.value}</div>
+                    <div className="text-[10px] text-muted-foreground">{s.label}</div>
                   </div>
-                  <h3 className="text-2xl font-bold mb-2">Avec Fluxia</h3>
-                  <p className="text-muted-foreground">Un seul outil. Tout centralisé. L'IA s'occupe du reste.</p>
-                </div>
-                <div className="space-y-3">
-                  {[
-                    "Email → Prospect → Devis → Facture → Paiement",
-                    "Automatiquement. En moins de 60 secondes.",
-                    "Sans effort de votre part.",
-                  ].map((text, i) => (
-                    <div key={i} className="flex items-center gap-3">
-                      <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center shrink-0">
-                        <Check className="w-3 h-3 text-green-400" />
-                      </div>
-                      <span className={cn("text-sm", i === 0 ? "font-medium" : "text-muted-foreground")}>{text}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Demo Section */}
-      <section className="py-24 px-4 bg-secondary/20 border-y border-border">
-        <div className="max-w-3xl mx-auto text-center">
-          <Badge variant="purple" className="mb-4">Démonstration interactive</Badge>
-          <h2 className="text-4xl font-bold mb-4">Regardez Fluxia en action.</h2>
-          <p className="text-muted-foreground text-lg mb-12">
-            Un email entrant. Fluxia fait tout le reste.
-          </p>
-
-          <div className="bg-card border border-border rounded-2xl p-6 text-left mb-8">
-            <div className="space-y-4">
-              {DEMO_STEPS.map((step, i) => (
-                <div
-                  key={i}
-                  className={cn(
-                    "transition-all duration-500",
-                    demoStep >= i ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
-                  )}
-                >
-                  {step.type === "email" && (
-                    <div className="p-4 rounded-lg bg-blue-500/5 border border-blue-500/20">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Mail className="w-4 h-4 text-blue-400" />
-                        <span className="text-xs text-blue-400 font-medium">Email entrant</span>
-                        <span className="text-xs text-muted-foreground ml-auto">{step.sender}</span>
-                      </div>
-                      <p className="text-sm italic text-muted-foreground">{step.content}</p>
-                    </div>
-                  )}
-                  {step.type === "ai" && (
-                    <div className="flex items-center gap-3 py-2">
-                      <div className="w-6 h-6 rounded-full bg-violet-500/20 flex items-center justify-center">
-                        <Bot className="w-3 h-3 text-violet-400 animate-pulse" />
-                      </div>
-                      <span className="text-sm text-violet-400">{step.content}</span>
-                      <div className="flex gap-1 ml-2">
-                        {[0, 1, 2].map((j) => (
-                          <div key={j} className="w-1.5 h-1.5 rounded-full bg-violet-500 animate-bounce" style={{ animationDelay: `${j * 150}ms` }} />
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  {step.type === "action" && (
-                    <div className="flex items-center gap-3 py-1.5">
-                      <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center shrink-0">
-                        <Check className="w-3 h-3 text-green-400" />
-                      </div>
-                      <span className="text-sm text-muted-foreground">{step.content}</span>
-                    </div>
-                  )}
-                  {step.type === "result" && (
-                    <div className="text-center py-4 border-t border-border mt-4">
-                      <div className="text-2xl font-bold text-gradient mb-1">Terminé ✓</div>
-                      <div className="text-muted-foreground">{step.content}</div>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-
-            {demoStep === -1 && (
-              <div className="text-center py-8">
-                <p className="text-muted-foreground mb-4">Cliquez sur le bouton pour voir la magie opérer.</p>
-              </div>
-            )}
-          </div>
-
-          <Button
-            variant="gradient"
-            size="lg"
-            onClick={runDemo}
-            disabled={demoRunning}
-          >
-            {demoRunning ? (
-              <>
-                <RefreshCw className="w-4 h-4 animate-spin" />
-                Démonstration en cours...
-              </>
-            ) : (
-              <>
-                <Play className="w-4 h-4" />
-                {demoStep >= 0 ? "Rejouer la démo" : "Lancer la démonstration"}
-              </>
-            )}
-          </Button>
-        </div>
-      </section>
-
-      {/* Features Grid */}
-      <section className="py-24 px-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <Badge variant="outline" className="mb-4 text-muted-foreground">Fonctionnalités</Badge>
-            <h2 className="text-4xl font-bold mb-4">Tout ce dont votre entreprise a besoin.</h2>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Un système complet. Conçu pour les PME et indépendants suisses.
-            </p>
-          </div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {FEATURES.map((f) => (
-              <div key={f.title} className="p-6 rounded-xl border border-border bg-card card-hover group">
-                <div className={cn("w-11 h-11 rounded-xl flex items-center justify-center mb-4", f.bg)}>
-                  <f.icon className={cn("w-5 h-5", f.color)} />
-                </div>
-                <h3 className="font-semibold mb-2">{f.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{f.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Comparison */}
-      <section id="comparaison" className="py-24 px-4 bg-secondary/20 border-y border-border">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-16">
-            <Badge variant="outline" className="mb-4 text-muted-foreground">Comparaison</Badge>
-            <h2 className="text-4xl font-bold mb-4">Fluxia vs la concurrence.</h2>
-            <p className="text-muted-foreground text-lg">
-              Pourquoi payer pour 4 outils quand un seul fait tout mieux ?
-            </p>
-          </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-border">
-                  <th className="text-left py-4 pr-8 text-sm font-medium text-muted-foreground w-48">Fonctionnalité</th>
-                  {["Fluxia", "Bexio", "HubSpot", "Zoho", "Odoo"].map((tool) => (
-                    <th key={tool} className={cn("py-4 px-4 text-center text-sm font-semibold", tool === "Fluxia" ? "text-violet-400" : "text-muted-foreground")}>
-                      {tool}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {COMPARISON.map((row, i) => (
-                  <tr key={i} className="border-b border-border/50 hover:bg-secondary/30 transition-colors">
-                    <td className="py-3.5 pr-8 text-sm">{row.feature}</td>
-                    {[row.fluxia, row.bexio, row.hubspot, row.zoho, row.odoo].map((val, j) => (
-                      <td key={j} className="py-3.5 px-4 text-center">
-                        {val ? (
-                          <div className="flex justify-center">
-                            <div className={cn("w-6 h-6 rounded-full flex items-center justify-center", j === 0 ? "bg-violet-500/20" : "bg-green-500/10")}>
-                              <Check className={cn("w-3.5 h-3.5", j === 0 ? "text-violet-400" : "text-green-400")} />
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="flex justify-center">
-                            <div className="w-6 h-6 rounded-full flex items-center justify-center bg-red-500/10">
-                              <X className="w-3.5 h-3.5 text-red-400/70" />
-                            </div>
-                          </div>
-                        )}
-                      </td>
-                    ))}
-                  </tr>
                 ))}
-              </tbody>
-            </table>
+              </div>
+              {/* Chart placeholder */}
+              <div className="rounded-lg border border-border bg-secondary/30 p-3 h-40 flex items-end gap-1">
+                {[45, 62, 55, 78, 82, 70, 88, 92, 85, 95, 89, 100].map((h, i) => (
+                  <div key={i} className="flex-1 rounded-t" style={{ height: `${h}%`, background: i === 11 ? "rgb(124 58 237 / 0.8)" : "rgb(124 58 237 / 0.25)" }} />
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="py-24 px-4">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-16">
-            <Badge variant="outline" className="mb-4 text-muted-foreground">Témoignages</Badge>
-            <h2 className="text-4xl font-bold mb-4">Ils ont transformé leur entreprise.</h2>
+      {/* ── FEATURES ── */}
+      <section id="fonctionnalités" className="px-4 sm:px-6 py-20 max-w-6xl mx-auto">
+        <div className="text-center mb-12">
+          <div className="text-xs font-medium text-violet-400 mb-3 uppercase tracking-wider">Fonctionnalités</div>
+          <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-balance">Tout ce dont vous avez besoin, rien de superflu</h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto text-sm sm:text-base">
+            Fluxia remplace 4 à 6 outils distincts par une plateforme unifiée, intelligente et pensée pour les PME suisses.
+          </p>
+        </div>
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          {FEATURES.map((f) => (
+            <div key={f.title} className="p-4 rounded-lg border border-border bg-card hover:border-white/10 transition-colors">
+              <div className="w-8 h-8 rounded-md bg-violet-600/15 border border-violet-600/20 flex items-center justify-center mb-3">
+                <f.icon className="w-4 h-4 text-violet-400" />
+              </div>
+              <h3 className="text-sm font-semibold mb-1.5">{f.title}</h3>
+              <p className="text-xs text-muted-foreground leading-relaxed">{f.description}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── HOW IT WORKS ── */}
+      <section className="px-4 sm:px-6 py-20 border-y border-border bg-card">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-12">
+            <div className="text-xs font-medium text-violet-400 mb-3 uppercase tracking-wider">Comment ça marche</div>
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4">Opérationnel en 5 minutes</h2>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
-            {TESTIMONIALS.map((t) => (
-              <div key={t.name} className="p-6 rounded-xl border border-border bg-card card-hover">
-                <div className="flex items-center gap-1 mb-4">
-                  {Array.from({ length: t.rating }).map((_, i) => (
-                    <Star key={i} className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+          <div className="grid sm:grid-cols-3 gap-6">
+            {[
+              { step: "01", title: "Connectez vos outils", desc: "Gmail, Outlook, Google Calendar. Import de vos contacts existants en un clic." },
+              { step: "02", title: "L'IA prend en charge", desc: "Vos emails sont analysés, vos devis générés, vos relances automatisées." },
+              { step: "03", title: "Vous validez", desc: "Fluxia vous soumet les actions importantes. Vous restez aux commandes, l'IA exécute." },
+            ].map((s) => (
+              <div key={s.step} className="relative">
+                <div className="text-4xl font-bold text-white/5 mb-3">{s.step}</div>
+                <h3 className="text-sm font-semibold mb-2">{s.title}</h3>
+                <p className="text-xs text-muted-foreground leading-relaxed">{s.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── COMPARISON ── */}
+      <section id="comparaison" className="px-4 sm:px-6 py-20 max-w-4xl mx-auto">
+        <div className="text-center mb-12">
+          <div className="text-xs font-medium text-violet-400 mb-3 uppercase tracking-wider">Comparaison</div>
+          <h2 className="text-3xl sm:text-4xl font-bold mb-4">Pourquoi choisir Fluxia ?</h2>
+        </div>
+
+        <div className="rounded-lg border border-border overflow-hidden">
+          {/* Header */}
+          <div className="grid grid-cols-4 bg-secondary/40 border-b border-border">
+            <div className="p-3 text-xs font-medium text-muted-foreground">Fonctionnalité</div>
+            <div className="p-3 text-xs font-semibold text-center text-violet-400">Fluxia</div>
+            <div className="p-3 text-xs font-medium text-center text-muted-foreground">Bexio</div>
+            <div className="p-3 text-xs font-medium text-center text-muted-foreground">HubSpot</div>
+          </div>
+          {COMPARISON.map((row, i) => (
+            <div key={row.feature} className={cn("grid grid-cols-4 border-b border-border last:border-0", i % 2 === 0 ? "" : "bg-secondary/20")}>
+              <div className="p-3 text-xs flex items-center gap-2">
+                {row.feature}
+                {row.note && <span className="text-[10px] text-violet-400 hidden sm:inline">— {row.note}</span>}
+              </div>
+              <div className="p-3 flex justify-center items-center">
+                {row.fluxia ? <CheckIcon /> : <CrossIcon />}
+              </div>
+              <div className="p-3 flex justify-center items-center">
+                {row.bexio ? <CheckIcon /> : <CrossIcon />}
+              </div>
+              <div className="p-3 flex justify-center items-center">
+                {row.hubspot ? <CheckIcon /> : <CrossIcon />}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── TESTIMONIALS ── */}
+      <section className="px-4 sm:px-6 py-20 border-t border-border">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12">
+            <div className="text-xs font-medium text-violet-400 mb-3 uppercase tracking-wider">Témoignages</div>
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4">Ils utilisent Fluxia chaque jour</h2>
+          </div>
+          <div className="grid sm:grid-cols-3 gap-4">
+            {[
+              {
+                name: "Jean Dupont",
+                role: "Dupont Bâtiment SA, Lausanne",
+                quote: "J'ai réduit mon temps administratif de 8 heures par semaine. Les devis IA sont bluffants — mes clients reçoivent une réponse en moins d'une heure.",
+                stars: 5,
+              },
+              {
+                name: "Sophie Martin",
+                role: "Martin Design Studio, Genève",
+                quote: "La gestion des relances était une corvée. Maintenant c'est automatique. Mon taux de recouvrement a augmenté de 40% en 3 mois.",
+                stars: 5,
+              },
+              {
+                name: "Marc Favre",
+                role: "TechSolutions SA, Zurich",
+                quote: "On a remplacé Bexio, HubSpot et Notion par Fluxia. Moins d'outils, moins de saisie, plus de temps pour les clients.",
+                stars: 5,
+              },
+            ].map((t) => (
+              <div key={t.name} className="p-5 rounded-lg border border-border bg-card">
+                <div className="flex gap-0.5 mb-3">
+                  {Array.from({ length: t.stars }).map((_, i) => (
+                    <Star key={i} className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
                   ))}
                 </div>
-                <p className="text-sm text-muted-foreground leading-relaxed mb-6 italic">"{t.comment}"</p>
-                <div className="flex items-center gap-3">
-                  <div className={cn("w-10 h-10 rounded-full bg-gradient-to-br flex items-center justify-center text-white text-sm font-semibold", t.color)}>
-                    {t.avatar}
-                  </div>
-                  <div>
-                    <div className="text-sm font-semibold">{t.name}</div>
-                    <div className="text-xs text-muted-foreground">{t.company}</div>
-                  </div>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-4">"{t.quote}"</p>
+                <div>
+                  <div className="text-xs font-medium">{t.name}</div>
+                  <div className="text-[11px] text-muted-foreground">{t.role}</div>
                 </div>
               </div>
             ))}
@@ -724,98 +422,86 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Pricing */}
-      <section id="tarifs" className="py-24 px-4 bg-secondary/20 border-y border-border">
+      {/* ── PRICING ── */}
+      <section id="tarifs" className="px-4 sm:px-6 py-20 border-t border-border">
         <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-16">
-            <Badge variant="outline" className="mb-4 text-muted-foreground">Tarifs</Badge>
-            <h2 className="text-4xl font-bold mb-4">Un prix honnête. Pas de surprises.</h2>
-            <p className="text-muted-foreground text-lg">
-              14 jours gratuits. Aucune carte bancaire requise.
-            </p>
+          <div className="text-center mb-12">
+            <div className="text-xs font-medium text-violet-400 mb-3 uppercase tracking-wider">Tarifs</div>
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4">Simple, transparent, sans surprises</h2>
+            <p className="text-sm text-muted-foreground">14 jours d'essai gratuit · Sans carte bancaire · Annulable à tout moment</p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6 mb-8">
-            {PRICING.map((plan) => (
-              <div
-                key={plan.name}
-                className={cn(
-                  "relative p-8 rounded-xl border bg-card flex flex-col",
-                  plan.popular ? "border-violet-500/50 glow-purple" : "border-border"
+          <div className="grid sm:grid-cols-3 gap-4">
+            {PLANS.map((plan) => (
+              <div key={plan.name} className={cn(
+                "p-6 rounded-lg border flex flex-col",
+                plan.highlighted
+                  ? "border-violet-500/50 bg-violet-600/5"
+                  : "border-border bg-card"
+              )}>
+                {plan.highlighted && (
+                  <div className="text-[10px] font-semibold text-violet-400 uppercase tracking-wider mb-3">Le plus populaire</div>
                 )}
-              >
-                {plan.popular && (
-                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
-                    <Badge variant="purple" className="px-3 py-1 text-xs font-semibold">
-                      <Star className="w-3 h-3 mr-1" />
-                      Le plus populaire
-                    </Badge>
-                  </div>
-                )}
-                <div className="mb-6">
-                  <h3 className="text-xl font-bold mb-1">{plan.name}</h3>
-                  <p className="text-sm text-muted-foreground mb-4">{plan.description}</p>
-                  <div className="flex items-end gap-1">
-                    <span className="text-4xl font-bold">CHF {plan.price}</span>
-                    <span className="text-muted-foreground mb-1">/mois</span>
-                  </div>
+                <div className="mb-4">
+                  <div className="text-base font-semibold mb-1">{plan.name}</div>
+                  <div className="text-xs text-muted-foreground">{plan.description}</div>
                 </div>
-
-                <ul className="space-y-3 mb-8 flex-1">
+                <div className="mb-5">
+                  <span className="text-3xl font-bold">CHF {plan.price}</span>
+                  <span className="text-sm text-muted-foreground">/mois</span>
+                </div>
+                <ul className="space-y-2.5 mb-6 flex-1">
                   {plan.features.map((f) => (
-                    <li key={f} className="flex items-center gap-2 text-sm">
-                      <div className="w-4 h-4 rounded-full bg-violet-500/20 flex items-center justify-center shrink-0">
-                        <Check className="w-2.5 h-2.5 text-violet-400" />
-                      </div>
-                      {f}
+                    <li key={f} className="flex items-center gap-2.5">
+                      <CheckIcon />
+                      <span className="text-xs text-muted-foreground">{f}</span>
                     </li>
                   ))}
                 </ul>
-
                 <Link href="/register">
                   <Button
-                    variant={plan.popular ? "gradient" : "outline"}
-                    className="w-full"
+                    className={cn("w-full text-sm", plan.highlighted ? "" : "variant-outline")}
+                    variant={plan.highlighted ? "default" : "outline"}
                   >
                     {plan.cta}
-                    <ArrowRight className="w-4 h-4" />
                   </Button>
                 </Link>
               </div>
             ))}
           </div>
 
-          <div className="p-8 rounded-xl border border-border bg-gradient-to-br from-violet-500/5 to-indigo-500/5 text-center">
-            <h3 className="text-xl font-bold mb-2">Enterprise</h3>
-            <p className="text-muted-foreground mb-4">
-              Utilisateurs illimités · Support dédié · Hébergement sur site · SLA garanti · Formation incluse
-            </p>
-            <Button variant="outline-gradient">Contacter l'équipe commerciale</Button>
+          {/* Enterprise */}
+          <div className="mt-4 p-5 rounded-lg border border-border bg-card flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+              <div className="text-sm font-semibold mb-1">Enterprise</div>
+              <p className="text-xs text-muted-foreground">Utilisateurs illimités, déploiement on-premise, contrat personnalisé, SLA garanti.</p>
+            </div>
+            <Button variant="outline" className="shrink-0">Contacter les ventes</Button>
           </div>
         </div>
       </section>
 
-      {/* FAQ */}
-      <section id="faq" className="py-24 px-4">
-        <div className="max-w-3xl mx-auto">
-          <div className="text-center mb-16">
-            <Badge variant="outline" className="mb-4 text-muted-foreground">FAQ</Badge>
-            <h2 className="text-4xl font-bold mb-4">Questions fréquentes.</h2>
+      {/* ── FAQ ── */}
+      <section id="faq" className="px-4 sm:px-6 py-20 border-t border-border">
+        <div className="max-w-2xl mx-auto">
+          <div className="text-center mb-12">
+            <div className="text-xs font-medium text-violet-400 mb-3 uppercase tracking-wider">FAQ</div>
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4">Questions fréquentes</h2>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-2">
             {FAQS.map((faq, i) => (
-              <div key={i} className="border border-border rounded-xl overflow-hidden">
+              <div key={i} className="border border-border rounded-lg overflow-hidden">
                 <button
                   onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                  className="w-full flex items-center justify-between p-5 text-left hover:bg-secondary/50 transition-colors"
+                  className="w-full flex items-center justify-between px-4 py-3.5 text-left"
                 >
-                  <span className="font-medium text-sm pr-4">{faq.question}</span>
+                  <span className="text-sm font-medium">{faq.q}</span>
                   <ChevronDown className={cn("w-4 h-4 text-muted-foreground shrink-0 transition-transform", openFaq === i && "rotate-180")} />
                 </button>
                 {openFaq === i && (
-                  <div className="px-5 pb-5">
-                    <p className="text-sm text-muted-foreground leading-relaxed">{faq.answer}</p>
+                  <div className="px-4 pb-4 text-sm text-muted-foreground leading-relaxed border-t border-border pt-3">
+                    {faq.a}
                   </div>
                 )}
               </div>
@@ -824,85 +510,61 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Final CTA */}
-      <section className="py-24 px-4 bg-gradient-to-br from-violet-950/50 via-background to-indigo-950/50 border-t border-border">
-        <div className="max-w-3xl mx-auto text-center">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center mx-auto mb-8 glow-purple">
-            <Zap className="w-8 h-8 text-white" />
+      {/* ── CTA ── */}
+      <section className="px-4 sm:px-6 py-20 border-t border-border">
+        <div className="max-w-2xl mx-auto text-center">
+          <div className="w-12 h-12 rounded-xl bg-violet-600/20 border border-violet-600/30 flex items-center justify-center mx-auto mb-6">
+            <Zap className="w-6 h-6 text-violet-400" />
           </div>
-          <h2 className="text-4xl sm:text-5xl font-bold mb-6">
-            Prêt à piloter votre
-            <br />
-            <span className="text-gradient">entreprise par l'IA ?</span>
+          <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-balance">
+            Prêt à automatiser votre business ?
           </h2>
-          <p className="text-muted-foreground text-lg mb-10 max-w-xl mx-auto">
-            Rejoignez des centaines de PME suisses qui ont centralisé leur activité sur Fluxia.
-            14 jours gratuits, sans engagement.
+          <p className="text-sm text-muted-foreground mb-8">
+            Rejoignez les centaines de PME suisses qui font confiance à Fluxia.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link href="/register">
-              <Button variant="gradient" size="xl" className="group">
-                Créer mon compte gratuit
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              <Button size="xl" className="gap-2 w-full sm:w-auto">
+                Démarrer gratuitement
+                <ArrowRight className="w-4 h-4" />
               </Button>
             </Link>
             <Link href="/login">
-              <Button variant="outline" size="xl">
+              <Button variant="outline" size="xl" className="w-full sm:w-auto">
                 Se connecter
               </Button>
             </Link>
           </div>
+          <p className="text-xs text-muted-foreground mt-4">
+            14 jours gratuits · Aucune carte requise
+          </p>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-border py-12 px-4">
+      {/* ── FOOTER ── */}
+      <footer className="border-t border-border px-4 sm:px-6 py-8">
         <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-4 gap-8 mb-12">
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center">
-                  <Zap className="w-3.5 h-3.5 text-white" />
-                </div>
-                <span className="font-bold text-gradient">Fluxia</span>
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 rounded-md bg-violet-600 flex items-center justify-center">
+                <Zap className="w-3 h-3 text-white" />
               </div>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Le système d'exploitation IA pour PME européennes. Basé en Suisse.
-              </p>
+              <span className="text-sm font-medium">Fluxia</span>
             </div>
-            {[
-              { title: "Produit", links: ["Fonctionnalités", "Tarifs", "API", "Changelog"] },
-              { title: "Entreprise", links: ["À propos", "Blog", "Carrières", "Contact"] },
-              { title: "Légal", links: ["CGU", "Confidentialité", "RGPD", "Cookies"] },
-            ].map((col) => (
-              <div key={col.title}>
-                <h4 className="font-semibold text-sm mb-4">{col.title}</h4>
-                <ul className="space-y-2">
-                  {col.links.map((link) => (
-                    <li key={link}>
-                      <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                        {link}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+            <div className="flex flex-wrap justify-center gap-x-6 gap-y-2">
+              {["Confidentialité", "CGU", "Sécurité", "Contact"].map((l) => (
+                <a key={l} href="#" className="text-xs text-muted-foreground hover:text-foreground">
+                  {l}
+                </a>
+              ))}
+            </div>
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <Shield className="w-3.5 h-3.5" />
+              Hébergé en Suisse · LPD conforme
+            </div>
           </div>
-          <div className="border-t border-border pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-sm text-muted-foreground">
-              © 2024 Fluxia SA · Tous droits réservés · Genève, Suisse
-            </p>
-            <div className="flex items-center gap-4 text-sm text-muted-foreground">
-              <div className="flex items-center gap-1.5">
-                <Shield className="w-3.5 h-3.5 text-green-400" />
-                <span>RGPD conforme</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <Globe className="w-3.5 h-3.5 text-blue-400" />
-                <span>Données en Suisse</span>
-              </div>
-            </div>
+          <div className="mt-6 pt-6 border-t border-border text-center text-[11px] text-muted-foreground">
+            © {new Date().getFullYear()} Fluxia SA · Genève, Suisse
           </div>
         </div>
       </footer>

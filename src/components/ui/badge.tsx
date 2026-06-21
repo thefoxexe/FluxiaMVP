@@ -3,23 +3,21 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const badgeVariants = cva(
-  "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+  "inline-flex items-center rounded px-1.5 py-0.5 text-[11px] font-medium transition-colors",
   {
     variants: {
       variant: {
-        default: "border-transparent bg-primary text-primary-foreground",
-        secondary: "border-transparent bg-secondary text-secondary-foreground",
-        destructive: "border-transparent bg-destructive text-destructive-foreground",
-        outline: "text-foreground",
-        success: "border-green-500/20 bg-green-500/10 text-green-400",
-        warning: "border-yellow-500/20 bg-yellow-500/10 text-yellow-400",
-        info: "border-blue-500/20 bg-blue-500/10 text-blue-400",
-        purple: "border-violet-500/20 bg-violet-500/10 text-violet-400",
+        default: "bg-violet-600/20 text-violet-300 border border-violet-600/30",
+        secondary: "bg-secondary text-muted-foreground border border-border",
+        destructive: "bg-red-600/15 text-red-400 border border-red-600/20",
+        outline: "border border-border text-foreground",
+        success: "bg-emerald-600/15 text-emerald-400 border border-emerald-600/20",
+        warning: "bg-amber-600/15 text-amber-400 border border-amber-600/20",
+        info: "bg-blue-600/15 text-blue-400 border border-blue-600/20",
+        purple: "bg-violet-600/15 text-violet-400 border border-violet-600/20",
       },
     },
-    defaultVariants: {
-      variant: "default",
-    },
+    defaultVariants: { variant: "default" },
   }
 );
 
@@ -28,9 +26,7 @@ export interface BadgeProps
     VariantProps<typeof badgeVariants> {}
 
 function Badge({ className, variant, ...props }: BadgeProps) {
-  return (
-    <div className={cn(badgeVariants({ variant }), className)} {...props} />
-  );
+  return <div className={cn(badgeVariants({ variant }), className)} {...props} />;
 }
 
 export { Badge, badgeVariants };

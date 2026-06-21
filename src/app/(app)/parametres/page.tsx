@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useTransition } from "react";
 import {
   User, Building2, Mail, Bell, Shield, CreditCard, Zap,
-  Globe, Key, Webhook, Users, ChevronRight, Check, Upload, Plus, Settings2
+  Globe, Key, Webhook, Users, ChevronRight, Check, Upload, Plus, Settings2, ExternalLink
 } from "lucide-react";
 import { Header } from "@/components/app/header";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,8 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
+import { createClient } from "@/lib/supabase/client";
+import type { Profile } from "@/lib/supabase/types";
 
 const NAV = [
   { id: "profile", label: "Profil", icon: User },
@@ -29,6 +31,7 @@ const NAV = [
 
 export default function ParametresPage() {
   const [activeSection, setActiveSection] = useState("profile");
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [notifications, setNotifications] = useState({
     email_new_prospect: true,
     email_invoice_paid: true,
@@ -37,7 +40,64 @@ export default function ParametresPage() {
     push_reminders: false,
     weekly_report: true,
   });
-  const [aiMode, setAiMode] = useState("semi_autonome");
+  const [aiMode, setAiMode] = useState<"manuel" | "semi_autonome" | "autonome">("semi_autonome");
+  const [saving, setSaving] = useState(false);
+  const [profileForm, setProfileForm] = useState({ full_name: "", email: "", company_name: "", company_phone: "", company_address: "", company_vat: "" });
+  const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(async ({ data: { user } }) => {
+      if (!user) return;
+      const { data } = await supabase.from("profiles").select("*").eq("id", user.id).single();
+      if (data) {
+        setProfile(data);
+        setAiMode(data.ai_mode ?? "semi_autonome");
+        setProfileForm({
+          full_name: data.full_name ?? "",
+          email: data.email ?? "",
+          company_name: data.company_name ?? "",
+          company_phone: data.company_phone ?? "",
+          company_address: data.company_address ?? "",
+          company_vat: data.company_vat ?? "",
+        });
+      }
+    });
+  }, []);
+
+  const saveProfile = () => {
+    setSaving(true);
+    startTransition(async () => {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        await supabase.from("profiles").update({
+          full_name: profileForm.full_name,
+          company_name: profileForm.company_name,
+          company_phone: profileForm.company_phone,
+          company_address: profileForm.company_address,
+          company_vat: profileForm.company_vat,
+        }).eq("id", user.id);
+      }
+      setSaving(false);
+    });
+  };
+
+  const saveAiMode = () => {
+    startTransition(async () => {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        await supabase.from("profiles").update({ ai_mode: aiMode }).eq("id", user.id);
+      }
+    });
+  };
+
+  const openStripePortal = async () => {
+    const res = await fetch("/api/stripe/portal", { method: "POST" });
+    const { url } = await res.json();
+    if (url) window.location.href = url;
+  };
 
   return (
     <div>
@@ -74,51 +134,41 @@ export default function ParametresPage() {
                   <p className="text-sm text-muted-foreground">Gérez vos informations personnelles.</p>
                 </div>
 
-                <div className="flex items-center gap-6">
-                  <Avatar className="w-20 h-20">
-                    <AvatarFallback className="text-2xl">JD</AvatarFallback>
-                  </Avatar>
+                <div className="flex items-center gap-5">
+                  <div className="w-16 h-16 rounded-full bg-violet-600/20 border border-violet-600/30 flex items-center justify-center text-lg font-bold text-violet-400">
+                    {profileForm.full_name ? profileForm.full_name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2) : "?"}
+                  </div>
                   <div>
-                    <Button variant="outline" size="sm" className="gap-2 mb-2">
-                      <Upload className="w-4 h-4" />
-                      Changer la photo
+                    <Button variant="outline" size="sm" className="gap-1.5 mb-1.5">
+                      <Upload className="w-3.5 h-3.5" /> Changer la photo
                     </Button>
-                    <p className="text-xs text-muted-foreground">JPG, PNG ou GIF. Max 2MB.</p>
+                    <p className="text-xs text-muted-foreground">JPG, PNG. Max 2MB.</p>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  {[
-                    { label: "Prénom", value: "Jean", id: "first" },
-                    { label: "Nom", value: "Dupont", id: "last" },
-                  ].map((f) => (
-                    <div key={f.id}>
-                      <Label className="text-sm mb-1.5 block">{f.label}</Label>
-                      <Input defaultValue={f.value} className="h-10" />
-                    </div>
-                  ))}
+                <div>
+                  <Label className="text-xs font-medium mb-1.5 block">Nom complet</Label>
+                  <Input className="h-9 text-sm" value={profileForm.full_name} onChange={(e) => setProfileForm({ ...profileForm, full_name: e.target.value })} />
                 </div>
 
                 <div>
-                  <Label className="text-sm mb-1.5 block">Email</Label>
-                  <Input defaultValue="jean.dupont@entreprise.ch" type="email" className="h-10" />
+                  <Label className="text-xs font-medium mb-1.5 block">Email</Label>
+                  <Input type="email" className="h-9 text-sm" value={profileForm.email} readOnly disabled />
+                  <p className="text-xs text-muted-foreground mt-1">L'email ne peut pas être modifié ici.</p>
                 </div>
 
                 <div>
-                  <Label className="text-sm mb-1.5 block">Téléphone</Label>
-                  <Input defaultValue="+41 79 000 00 00" className="h-10" />
-                </div>
-
-                <div>
-                  <Label className="text-sm mb-1.5 block">Langue de l'interface</Label>
-                  <select className="w-full h-10 rounded-lg border border-input bg-transparent px-3 text-sm">
+                  <Label className="text-xs font-medium mb-1.5 block">Langue de l'interface</Label>
+                  <select className="w-full h-9 rounded-md border border-input bg-background px-3 text-sm">
                     <option>Français</option>
                     <option>English</option>
                     <option>Deutsch</option>
                   </select>
                 </div>
 
-                <Button variant="gradient">Enregistrer les modifications</Button>
+                <Button className="h-9 text-sm" onClick={saveProfile} disabled={saving || isPending}>
+                  {saving ? "Enregistrement..." : "Enregistrer"}
+                </Button>
               </div>
             )}
 
@@ -222,11 +272,11 @@ export default function ParametresPage() {
                 <div>
                   <div className="text-sm font-medium mb-3">Mode d'autonomie</div>
                   <div className="space-y-3">
-                    {[
-                      { id: "assistant", label: "Assistant", desc: "L'IA propose des suggestions et brouillons. Vous validez tout." },
-                      { id: "semi_autonome", label: "Semi-autonome", desc: "L'IA gère les relances et le classement. Validation requise pour les emails clients." },
-                      { id: "autonome", label: "Autonome", desc: "L'IA gère tout le workflow. Supervision minimale. Pour utilisateurs avancés." },
-                    ].map((mode) => (
+                    {([
+                      { id: "manuel" as const, label: "Assistant", desc: "L'IA propose des suggestions et brouillons. Vous validez tout." },
+                      { id: "semi_autonome" as const, label: "Semi-autonome", desc: "L'IA gère les relances et le classement. Validation requise pour les emails clients." },
+                      { id: "autonome" as const, label: "Autonome", desc: "L'IA gère tout le workflow. Supervision minimale. Pour utilisateurs avancés." },
+                    ] as const).map((mode) => (
                       <label key={mode.id} className="flex items-start gap-3 p-4 rounded-xl border border-border hover:border-violet-500/20 cursor-pointer has-[:checked]:border-violet-500/50 has-[:checked]:bg-violet-500/5 transition-all">
                         <input
                           type="radio"
@@ -267,7 +317,9 @@ export default function ParametresPage() {
                   </div>
                 </div>
 
-                <Button variant="gradient">Enregistrer la configuration</Button>
+                <Button className="h-9 text-sm" onClick={saveAiMode} disabled={isPending}>
+                  {isPending ? "Enregistrement..." : "Enregistrer la configuration"}
+                </Button>
               </div>
             )}
 
@@ -329,38 +381,49 @@ export default function ParametresPage() {
                   <p className="text-sm text-muted-foreground">Gérez votre abonnement Fluxia.</p>
                 </div>
 
-                <div className="p-6 rounded-xl border border-violet-500/30 bg-gradient-to-br from-violet-500/10 to-indigo-500/5">
-                  <div className="flex items-center justify-between mb-4">
+                <div className="p-5 rounded-lg border border-violet-600/30 bg-violet-600/5">
+                  <div className="flex items-center justify-between mb-3">
                     <div>
                       <div className="text-xs text-violet-400 font-medium mb-1">Plan actuel</div>
-                      <div className="text-2xl font-bold">Team</div>
+                      <div className="text-xl font-bold capitalize">{profile?.subscription_plan ?? "Free"}</div>
                     </div>
-                    <Badge variant="purple">Actif</Badge>
+                    <Badge variant={profile?.subscription_status === "active" ? "success" : "secondary"} className="capitalize">
+                      {profile?.subscription_status === "active" ? "Actif" : profile?.subscription_status ?? "Gratuit"}
+                    </Badge>
                   </div>
-                  <div className="text-sm text-muted-foreground mb-4">CHF 79/mois · Renouvellement le 1er avril 2024</div>
-                  <div className="grid grid-cols-2 gap-2">
-                    <Button variant="outline" size="sm">Changer de plan</Button>
-                    <Button variant="outline" size="sm" className="text-destructive border-destructive/30 hover:bg-destructive/10">Annuler</Button>
-                  </div>
+                  {profile?.subscription_period_end && (
+                    <p className="text-xs text-muted-foreground mb-4">
+                      Renouvellement le {new Date(profile.subscription_period_end).toLocaleDateString("fr-CH")}
+                    </p>
+                  )}
+                  <Button className="h-9 gap-2 text-sm" onClick={openStripePortal}>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                    Gérer l'abonnement
+                  </Button>
                 </div>
 
-                <div>
-                  <div className="text-sm font-semibold mb-3">Historique des paiements</div>
-                  <div className="space-y-2">
-                    {[
-                      { date: "01.03.2024", amount: "CHF 79.00", status: "Payé" },
-                      { date: "01.02.2024", amount: "CHF 79.00", status: "Payé" },
-                      { date: "01.01.2024", amount: "CHF 79.00", status: "Payé" },
-                    ].map((inv, i) => (
-                      <div key={i} className="flex items-center justify-between p-3 rounded-lg border border-border">
-                        <div className="text-sm">{inv.date}</div>
-                        <div className="text-sm font-medium">{inv.amount}</div>
-                        <Badge variant="success" className="text-xs">{inv.status}</Badge>
-                        <Button variant="ghost" size="sm" className="text-xs h-7">PDF</Button>
-                      </div>
-                    ))}
+                {profile?.subscription_plan === "free" && (
+                  <div className="p-5 rounded-lg border border-border">
+                    <div className="text-sm font-medium mb-3">Passer à un plan payant</div>
+                    <p className="text-xs text-muted-foreground mb-4">Débloquez toutes les fonctionnalités IA et l'accès multi-utilisateurs.</p>
+                    <div className="grid grid-cols-3 gap-3">
+                      {[
+                        { name: "Solo", price: "49", desc: "1 utilisateur" },
+                        { name: "Team", price: "99", desc: "5 utilisateurs", highlight: true },
+                        { name: "Business", price: "199", desc: "Illimité" },
+                      ].map((plan) => (
+                        <div key={plan.name} className={cn("p-3 rounded-lg border text-center", plan.highlight ? "border-violet-600/50 bg-violet-600/5" : "border-border")}>
+                          <div className="text-xs font-semibold mb-1">{plan.name}</div>
+                          <div className="text-lg font-bold">CHF {plan.price}</div>
+                          <div className="text-[10px] text-muted-foreground mb-2">/mois · {plan.desc}</div>
+                          <Button size="sm" className="w-full h-7 text-xs" variant={plan.highlight ? "default" : "outline"}>
+                            Choisir
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             )}
 
