@@ -127,9 +127,9 @@ export default function DashboardPage() {
         subtitle={`Bonjour Jean · ${new Date().toLocaleDateString("fr-CH", { weekday: "long", day: "numeric", month: "long" })}`}
       />
 
-      <div className="p-6 space-y-6">
+      <div className="p-4 lg:p-6 space-y-4 lg:space-y-6">
         {/* AI Summary Banner */}
-        <div className="p-4 rounded-xl border border-violet-500/20 bg-gradient-to-r from-violet-500/5 to-indigo-500/5 flex items-start gap-4">
+        <div className="p-3 lg:p-4 rounded-xl border border-violet-500/20 bg-gradient-to-r from-violet-500/5 to-indigo-500/5 flex items-start gap-3 lg:gap-4">
           <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center shrink-0">
             <Zap className="w-4 h-4 text-white" />
           </div>
@@ -141,7 +141,7 @@ export default function DashboardPage() {
               Le devis <strong className="text-foreground">DEV-2024-002</strong> de Sophie Martin a été consulté hier, c'est le moment idéal pour un suivi.
             </p>
           </div>
-          <Button variant="outline" size="sm" className="shrink-0 text-violet-400 border-violet-500/30 hover:bg-violet-500/10">
+          <Button variant="outline" size="sm" className="shrink-0 text-violet-400 border-violet-500/30 hover:bg-violet-500/10 hidden sm:flex">
             Agir
           </Button>
         </div>
@@ -173,7 +173,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Charts Row */}
-        <div className="grid lg:grid-cols-3 gap-6">
+        <div className="grid lg:grid-cols-3 gap-4 lg:gap-6">
           {/* Revenue Chart */}
           <Card className="lg:col-span-2">
             <CardHeader className="pb-2">
@@ -248,7 +248,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Bottom Row */}
-        <div className="grid lg:grid-cols-3 gap-6">
+        <div className="grid lg:grid-cols-3 gap-4 lg:gap-6">
           {/* Recent Invoices */}
           <Card className="lg:col-span-1">
             <CardHeader className="pb-3">

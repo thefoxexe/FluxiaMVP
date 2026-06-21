@@ -74,10 +74,10 @@ export default function RapportsPage() {
     <div>
       <Header title="Rapports" subtitle="Analysez vos performances et prenez de meilleures décisions" />
 
-      <div className="p-6 space-y-6">
+      <div className="p-4 lg:p-6 space-y-4 lg:space-y-6">
         {/* Toolbar */}
-        <div className="flex items-center justify-between">
-          <div className="flex gap-1">
+        <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+          <div className="flex gap-1 flex-wrap">
             {PERIOD_OPTIONS.map((p) => (
               <button
                 key={p}
@@ -94,17 +94,17 @@ export default function RapportsPage() {
           <div className="flex gap-2">
             <Button variant="outline" size="sm" className="gap-2">
               <Zap className="w-3.5 h-3.5 text-violet-400" />
-              Rapport IA
+              <span className="hidden sm:inline">Rapport IA</span>
             </Button>
             <Button variant="outline" size="sm" className="gap-2">
               <Download className="w-4 h-4" />
-              Exporter
+              <span className="hidden sm:inline">Exporter</span>
             </Button>
           </div>
         </div>
 
         {/* KPIs */}
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
           {[
             { label: "CA 6 mois", value: formatCurrency(totalRevenue), trend: "+28%", up: true, icon: TrendingUp },
             { label: "CA mensuel moyen", value: formatCurrency(avgMonthly), trend: "+12%", up: true, icon: BarChart3 },

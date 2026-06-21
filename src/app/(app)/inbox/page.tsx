@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import {
   Mail, Search, Star, Archive, Tag, Clock, Reply, Forward,
   Sparkles, ChevronDown, Filter, MoreHorizontal, Send,
-  Bot, Check, AlertCircle, Inbox as InboxIcon, RefreshCw, Zap
+  Bot, Check, AlertCircle, Inbox as InboxIcon, RefreshCw, Zap, ArrowLeft
 } from "lucide-react";
 import { Header } from "@/components/app/header";
 import { Button } from "@/components/ui/button";
@@ -38,12 +38,13 @@ const CATEGORY_COLORS: Record<string, string> = {
 };
 
 export default function InboxPage() {
-  const [selectedEmail, setSelectedEmail] = useState<Email | null>(mockEmails[0]);
+  const [selectedEmail, setSelectedEmail] = useState<Email | null>(null);
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [replyOpen, setReplyOpen] = useState(false);
   const [replyText, setReplyText] = useState("");
   const [useAiDraft, setUseAiDraft] = useState(false);
+  const [mobileShowDetail, setMobileShowDetail] = useState(false);
 
   const filteredEmails = mockEmails.filter((e) => {
     const matchesCategory = activeCategory === "all" || e.category === activeCategory;
@@ -58,6 +59,7 @@ export default function InboxPage() {
     setReplyOpen(false);
     setReplyText("");
     setUseAiDraft(false);
+    setMobileShowDetail(true);
   };
 
   const handleUseDraft = () => {
@@ -70,11 +72,15 @@ export default function InboxPage() {
 
   return (
     <div>
-      <Header title="Inbox IA" subtitle="Vos emails classifiés et traités par l'intelligence artificielle" />
+      <Header title="Inbox IA" subtitle="Emails classifiés par l'IA" />
 
       <div className="flex h-[calc(100vh-64px)]">
         {/* Left: Email List */}
-        <div className="w-80 border-r border-border flex flex-col shrink-0">
+        <div className={cn(
+          "border-r border-border flex flex-col shrink-0",
+          "w-full lg:w-80",
+          mobileShowDetail && "hidden lg:flex"
+        )}>
           {/* Search */}
           <div className="p-3 border-b border-border">
             <div className="relative">
@@ -153,22 +159,34 @@ export default function InboxPage() {
 
         {/* Right: Email Detail */}
         {selectedEmail ? (
-          <div className="flex-1 flex flex-col overflow-hidden">
+          <div className={cn(
+            "flex-1 flex flex-col overflow-hidden",
+            !mobileShowDetail && "hidden lg:flex"
+          )}>
             {/* Email Header */}
-            <div className="px-6 py-4 border-b border-border">
+            <div className="px-4 lg:px-6 py-4 border-b border-border">
               <div className="flex items-start justify-between gap-4 mb-3">
-                <div className="flex-1">
-                  <h2 className="text-base font-semibold mb-1">{selectedEmail.subject}</h2>
-                  <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                <div className="flex items-start gap-3 flex-1 min-w-0">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="lg:hidden shrink-0 mt-0.5"
+                    onClick={() => setMobileShowDetail(false)}
+                  >
+                    <ArrowLeft className="w-4 h-4" />
+                  </Button>
+                <div className="flex-1 min-w-0">
+                  <h2 className="text-sm lg:text-base font-semibold mb-1 truncate">{selectedEmail.subject}</h2>
+                  <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
                     <div className="flex items-center gap-2">
                       <Avatar className="w-5 h-5">
                         <AvatarFallback className="text-[8px]">{getInitials(selectedEmail.fromName)}</AvatarFallback>
                       </Avatar>
-                      <span><strong className="text-foreground">{selectedEmail.fromName}</strong> &lt;{selectedEmail.from}&gt;</span>
+                      <span><strong className="text-foreground">{selectedEmail.fromName}</strong></span>
                     </div>
-                    <span>·</span>
-                    <span>{formatRelativeDate(selectedEmail.receivedAt)}</span>
+                    <span className="hidden sm:inline">{formatRelativeDate(selectedEmail.receivedAt)}</span>
                   </div>
+                </div>
                 </div>
                 <div className="flex items-center gap-1.5 shrink-0">
                   <div className={cn("text-xs border rounded-full px-2.5 py-1 font-medium", CATEGORY_COLORS[selectedEmail.category] || "")}>
@@ -308,10 +326,10 @@ export default function InboxPage() {
             )}
           </div>
         ) : (
-          <div className="flex-1 flex items-center justify-center">
+          <div className="hidden lg:flex flex-1 items-center justify-center">
             <div className="text-center">
               <InboxIcon className="w-12 h-12 text-muted-foreground/30 mx-auto mb-4" />
-              <p className="text-muted-foreground">Sélectionnez un email</p>
+              <p className="text-sm text-muted-foreground">Sélectionnez un email</p>
             </div>
           </div>
         )}

@@ -153,7 +153,7 @@ export default function AssistantPage() {
       <div className="flex h-[calc(100vh-64px)]">
         {/* Chat Area */}
         <div className="flex-1 flex flex-col">
-          <ScrollArea className="flex-1 p-6" ref={scrollRef}>
+          <ScrollArea className="flex-1 p-4 lg:p-6" ref={scrollRef}>
             <div className="max-w-3xl mx-auto space-y-6">
               {messages.map((msg, i) => (
                 <div key={i} className={cn("flex gap-3", msg.role === "user" ? "justify-end" : "justify-start")}>

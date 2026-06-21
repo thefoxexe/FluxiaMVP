@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Search, Bell, Plus, Zap } from "lucide-react";
+import { Search, Bell, Plus, Zap, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -14,6 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
+import { useLayout } from "@/lib/layout-context";
 
 interface HeaderProps {
   title: string;
@@ -29,16 +30,27 @@ const NOTIFICATIONS = [
 
 export function Header({ title, subtitle }: HeaderProps) {
   const [searchOpen, setSearchOpen] = useState(false);
+  const { toggleMobileSidebar } = useLayout();
   const unreadCount = NOTIFICATIONS.filter((n) => n.unread).length;
 
   return (
-    <header className="h-16 border-b border-border flex items-center justify-between px-6 bg-background/80 backdrop-blur-sm sticky top-0 z-30">
-      <div>
-        <h1 className="text-lg font-semibold leading-none">{title}</h1>
-        {subtitle && <p className="text-xs text-muted-foreground mt-0.5">{subtitle}</p>}
+    <header className="h-16 border-b border-border flex items-center justify-between px-4 lg:px-6 bg-background/80 backdrop-blur-sm sticky top-0 z-30">
+      <div className="flex items-center gap-3">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="lg:hidden shrink-0"
+          onClick={toggleMobileSidebar}
+        >
+          <Menu className="w-5 h-5" />
+        </Button>
+        <div>
+          <h1 className="text-base lg:text-lg font-semibold leading-none">{title}</h1>
+          {subtitle && <p className="text-xs text-muted-foreground mt-0.5 hidden sm:block">{subtitle}</p>}
+        </div>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1.5 lg:gap-2">
         {/* Search */}
         <div className={cn("relative transition-all duration-300", searchOpen ? "w-64" : "w-auto")}>
           {searchOpen ? (

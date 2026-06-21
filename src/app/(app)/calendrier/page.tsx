@@ -63,16 +63,16 @@ export default function CalendrierPage() {
     <div>
       <Header title="Calendrier" subtitle="Gérez vos rendez-vous et synchronisez vos agendas" />
 
-      <div className="flex h-[calc(100vh-64px)]">
+      <div className="flex flex-col lg:flex-row h-[calc(100vh-64px)]">
         {/* Main Calendar */}
-        <div className="flex-1 p-6 overflow-y-auto">
+        <div className="flex-1 p-4 lg:p-6 overflow-y-auto">
           {/* Header */}
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-4">
+          <div className="flex flex-wrap items-center justify-between gap-3 mb-4 lg:mb-6">
+            <div className="flex items-center gap-3">
               <button onClick={prevMonth} className="w-8 h-8 rounded-lg border border-border flex items-center justify-center hover:bg-secondary transition-colors">
                 <ChevronLeft className="w-4 h-4" />
               </button>
-              <h2 className="text-xl font-bold">{MONTHS[currentMonth]} {currentYear}</h2>
+              <h2 className="text-base lg:text-xl font-bold">{MONTHS[currentMonth]} {currentYear}</h2>
               <button onClick={nextMonth} className="w-8 h-8 rounded-lg border border-border flex items-center justify-center hover:bg-secondary transition-colors">
                 <ChevronRight className="w-4 h-4" />
               </button>
@@ -82,7 +82,7 @@ export default function CalendrierPage() {
                 onClick={() => { setCurrentMonth(today.getMonth()); setCurrentYear(today.getFullYear()); setSelectedDay(today.getDate()); }}
                 className="text-xs text-violet-400"
               >
-                Aujourd'hui
+                Auj.
               </Button>
             </div>
             <div className="flex items-center gap-2">
@@ -99,7 +99,7 @@ export default function CalendrierPage() {
               </div>
               <Button variant="gradient" size="sm" className="gap-2">
                 <Plus className="w-4 h-4" />
-                Événement
+                <span className="hidden sm:inline">Événement</span>
               </Button>
             </div>
           </div>
@@ -164,7 +164,7 @@ export default function CalendrierPage() {
         </div>
 
         {/* Right Sidebar */}
-        <div className="w-72 border-l border-border p-4 overflow-y-auto space-y-4">
+        <div className="lg:w-72 border-t lg:border-t-0 lg:border-l border-border p-4 overflow-y-auto space-y-4">
           {/* Selected Day Events */}
           {selectedDay && (
             <div>

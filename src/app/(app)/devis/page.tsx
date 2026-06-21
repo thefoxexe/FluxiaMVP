@@ -84,9 +84,9 @@ export default function DevisPage() {
     <div>
       <Header title="Devis" subtitle="Créez, envoyez et suivez vos propositions commerciales" />
 
-      <div className="p-6 space-y-6">
+      <div className="p-4 lg:p-6 space-y-4 lg:space-y-6">
         {/* Stats */}
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
           {STATS.map((stat) => (
             <Card key={stat.label} className="card-hover">
               <CardContent className="p-4 flex items-center gap-3">
@@ -104,9 +104,9 @@ export default function DevisPage() {
         </div>
 
         {/* Toolbar */}
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3 flex-1">
-            <div className="relative max-w-xs flex-1">
+        <div className="flex flex-col gap-3">
+          <div className="flex gap-3">
+            <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
                 placeholder="Rechercher un devis..."
@@ -115,38 +115,37 @@ export default function DevisPage() {
                 onChange={(e) => setSearch(e.target.value)}
               />
             </div>
-            <div className="flex gap-1">
-              {statuses.map((s) => (
-                <button
-                  key={s}
-                  onClick={() => setStatusFilter(s)}
-                  className={cn(
-                    "px-3 py-1.5 rounded-lg text-xs font-medium transition-colors capitalize",
-                    statusFilter === s
-                      ? "bg-violet-500/20 text-violet-300 border border-violet-500/30"
-                      : "bg-secondary text-muted-foreground hover:text-foreground"
-                  )}
-                >
-                  {s === "tous" ? "Tous" : s}
-                </button>
-              ))}
-            </div>
-          </div>
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm" className="gap-2">
+            <Button variant="outline" size="sm" className="gap-2 shrink-0">
               <Zap className="w-4 h-4 text-violet-400" />
-              Devis IA
+              <span className="hidden sm:inline">Devis IA</span>
             </Button>
-            <Button variant="gradient" size="sm" className="gap-2">
+            <Button variant="gradient" size="sm" className="gap-2 shrink-0">
               <Plus className="w-4 h-4" />
-              Nouveau devis
+              <span className="hidden sm:inline">Nouveau</span>
             </Button>
+          </div>
+          <div className="flex gap-1 overflow-x-auto scrollbar-none pb-1">
+            {statuses.map((s) => (
+              <button
+                key={s}
+                onClick={() => setStatusFilter(s)}
+                className={cn(
+                  "px-3 py-1.5 rounded-lg text-xs font-medium transition-colors capitalize whitespace-nowrap shrink-0",
+                  statusFilter === s
+                    ? "bg-violet-500/20 text-violet-300 border border-violet-500/30"
+                    : "bg-secondary text-muted-foreground hover:text-foreground"
+                )}
+              >
+                {s === "tous" ? "Tous" : s}
+              </button>
+            ))}
           </div>
         </div>
 
         {/* Table */}
         <div className="rounded-xl border border-border overflow-hidden">
-          <table className="w-full">
+          <div className="overflow-x-auto">
+          <table className="w-full min-w-[600px]">
             <thead className="bg-secondary/30 border-b border-border">
               <tr>
                 <th className="text-left py-3 px-4 text-xs font-semibold text-muted-foreground">Numéro</th>
@@ -222,6 +221,7 @@ export default function DevisPage() {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       </div>
 

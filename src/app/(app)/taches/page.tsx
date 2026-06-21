@@ -48,9 +48,9 @@ export default function TachesPage() {
     <div>
       <Header title="Tâches" subtitle="Gérez vos tâches et suivez vos priorités" />
 
-      <div className="p-6 space-y-6">
+      <div className="p-4 lg:p-6 space-y-4 lg:space-y-6">
         {/* Stats */}
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
           {[
             { label: "À faire", value: byStatus("todo").length, color: "text-foreground", bg: "bg-secondary" },
             { label: "En cours", value: byStatus("en_cours").length, color: "text-blue-400", bg: "bg-blue-500/10" },

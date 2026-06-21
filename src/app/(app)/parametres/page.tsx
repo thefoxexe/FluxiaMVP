@@ -43,28 +43,28 @@ export default function ParametresPage() {
     <div>
       <Header title="Paramètres" subtitle="Configurez votre espace Fluxia" />
 
-      <div className="flex h-[calc(100vh-64px)]">
+      <div className="flex flex-col lg:flex-row h-[calc(100vh-64px)]">
         {/* Sidebar */}
-        <div className="w-56 border-r border-border p-3 space-y-1">
+        <div className="lg:w-56 border-b lg:border-b-0 lg:border-r border-border p-3 flex lg:flex-col gap-1 overflow-x-auto lg:overflow-x-visible scrollbar-none shrink-0">
           {NAV.map((item) => (
             <button
               key={item.id}
               onClick={() => setActiveSection(item.id)}
               className={cn(
-                "flex items-center gap-3 w-full px-3 py-2 rounded-lg text-sm transition-colors text-left",
+                "flex items-center gap-2 lg:gap-3 w-full px-3 py-2 rounded-lg text-xs lg:text-sm transition-colors text-left whitespace-nowrap shrink-0 lg:shrink",
                 activeSection === item.id
                   ? "bg-violet-500/15 text-violet-300"
                   : "text-muted-foreground hover:bg-secondary hover:text-foreground"
               )}
             >
               <item.icon className="w-4 h-4 shrink-0" />
-              {item.label}
+              <span className="hidden sm:inline">{item.label}</span>
             </button>
           ))}
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-8">
+        <div className="flex-1 overflow-y-auto p-4 lg:p-8">
           <div className="max-w-2xl space-y-8">
 
             {activeSection === "profile" && (

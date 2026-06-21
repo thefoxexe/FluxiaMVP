@@ -66,9 +66,9 @@ export default function CRMPage() {
     <div>
       <Header title="CRM" subtitle="Gérez vos contacts et votre pipeline de vente" />
 
-      <div className="p-6 space-y-6">
+      <div className="p-4 lg:p-6 space-y-4 lg:space-y-6">
         {/* Stats */}
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
           {[
             { label: "Total contacts", value: mockContacts.length, icon: Users, color: "text-violet-400", bg: "bg-violet-500/10" },
             { label: "Clients actifs", value: mockContacts.filter((c) => c.status === "gagné").length, icon: Star, color: "text-green-400", bg: "bg-green-500/10" },
@@ -90,8 +90,8 @@ export default function CRMPage() {
         </div>
 
         {/* Toolbar */}
-        <div className="flex items-center justify-between gap-4">
-          <div className="relative flex-1 max-w-sm">
+        <div className="flex flex-col sm:flex-row gap-3">
+          <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
               placeholder="Rechercher un contact..."
@@ -103,7 +103,7 @@ export default function CRMPage() {
           <div className="flex items-center gap-2">
             <Button variant="outline" size="sm" className="gap-2">
               <Filter className="w-4 h-4" />
-              Filtres
+              <span className="hidden sm:inline">Filtres</span>
             </Button>
             <div className="flex items-center border border-border rounded-lg overflow-hidden">
               <button
@@ -121,7 +121,7 @@ export default function CRMPage() {
             </div>
             <Button variant="gradient" size="sm" className="gap-2">
               <Plus className="w-4 h-4" />
-              Nouveau contact
+              <span className="hidden sm:inline">Nouveau contact</span>
             </Button>
           </div>
         </div>
@@ -129,72 +129,108 @@ export default function CRMPage() {
         {view === "list" ? (
           /* List View */
           <div className="rounded-xl border border-border overflow-hidden">
-            <table className="w-full">
-              <thead className="bg-secondary/30 border-b border-border">
-                <tr>
-                  <th className="text-left py-3 px-4 text-xs font-semibold text-muted-foreground">Contact</th>
-                  <th className="text-left py-3 px-4 text-xs font-semibold text-muted-foreground">Entreprise</th>
-                  <th className="text-left py-3 px-4 text-xs font-semibold text-muted-foreground">Statut</th>
-                  <th className="text-left py-3 px-4 text-xs font-semibold text-muted-foreground">Score IA</th>
-                  <th className="text-left py-3 px-4 text-xs font-semibold text-muted-foreground">CA</th>
-                  <th className="text-left py-3 px-4 text-xs font-semibold text-muted-foreground">Tags</th>
-                  <th className="py-3 px-4 w-8" />
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
-                {filtered.map((contact) => (
-                  <tr
-                    key={contact.id}
-                    className="hover:bg-secondary/30 transition-colors cursor-pointer group"
-                    onClick={() => setSelectedContact(contact)}
-                  >
-                    <td className="py-3 px-4">
-                      <div className="flex items-center gap-3">
-                        <Avatar className="w-8 h-8">
-                          <AvatarFallback className="text-xs">{getInitials(contact.name)}</AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <div className="text-sm font-medium">{contact.name}</div>
-                          <div className="text-xs text-muted-foreground">{contact.email}</div>
+            {/* Desktop table */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-secondary/30 border-b border-border">
+                  <tr>
+                    <th className="text-left py-3 px-4 text-xs font-semibold text-muted-foreground">Contact</th>
+                    <th className="text-left py-3 px-4 text-xs font-semibold text-muted-foreground">Entreprise</th>
+                    <th className="text-left py-3 px-4 text-xs font-semibold text-muted-foreground">Statut</th>
+                    <th className="text-left py-3 px-4 text-xs font-semibold text-muted-foreground">Score IA</th>
+                    <th className="text-left py-3 px-4 text-xs font-semibold text-muted-foreground">CA</th>
+                    <th className="text-left py-3 px-4 text-xs font-semibold text-muted-foreground">Tags</th>
+                    <th className="py-3 px-4 w-8" />
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {filtered.map((contact) => (
+                    <tr
+                      key={contact.id}
+                      className="hover:bg-secondary/30 transition-colors cursor-pointer group"
+                      onClick={() => setSelectedContact(contact)}
+                    >
+                      <td className="py-3 px-4">
+                        <div className="flex items-center gap-3">
+                          <Avatar className="w-8 h-8">
+                            <AvatarFallback className="text-xs">{getInitials(contact.name)}</AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <div className="text-sm font-medium">{contact.name}</div>
+                            <div className="text-xs text-muted-foreground">{contact.email}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="py-3 px-4">
+                        <div className="text-sm">{contact.company}</div>
+                      </td>
+                      <td className="py-3 px-4">
+                        <div className={cn("text-xs border rounded-full px-2.5 py-1 font-medium w-fit", getStatusColor(contact.status))}>
+                          {contact.status}
+                        </div>
+                      </td>
+                      <td className="py-3 px-4">
+                        <div className="flex items-center gap-2">
+                          <Progress value={contact.score} className="w-16 h-1.5" />
+                          <span className="text-xs text-muted-foreground">{contact.score}</span>
+                        </div>
+                      </td>
+                      <td className="py-3 px-4">
+                        <span className="text-sm font-medium">{contact.revenue > 0 ? formatCurrency(contact.revenue) : "—"}</span>
+                      </td>
+                      <td className="py-3 px-4">
+                        <div className="flex gap-1 flex-wrap">
+                          {contact.tags.slice(0, 2).map((tag) => (
+                            <span key={tag} className="text-[10px] bg-secondary rounded-full px-2 py-0.5 text-muted-foreground">{tag}</span>
+                          ))}
+                          {contact.tags.length > 2 && (
+                            <span className="text-[10px] text-muted-foreground">+{contact.tags.length - 2}</span>
+                          )}
+                        </div>
+                      </td>
+                      <td className="py-3 px-4">
+                        <Button variant="ghost" size="icon" className="w-7 h-7 opacity-0 group-hover:opacity-100">
+                          <MoreHorizontal className="w-4 h-4" />
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            {/* Mobile cards */}
+            <div className="md:hidden divide-y divide-border">
+              {filtered.map((contact) => (
+                <button
+                  key={contact.id}
+                  className="w-full text-left p-4 hover:bg-secondary/30 transition-colors"
+                  onClick={() => setSelectedContact(contact)}
+                >
+                  <div className="flex items-center gap-3">
+                    <Avatar className="w-10 h-10 shrink-0">
+                      <AvatarFallback className="text-sm">{getInitials(contact.name)}</AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between mb-0.5">
+                        <span className="text-sm font-medium truncate">{contact.name}</span>
+                        <span className="text-xs text-muted-foreground shrink-0 ml-2">{contact.revenue > 0 ? formatCurrency(contact.revenue) : "—"}</span>
+                      </div>
+                      <div className="text-xs text-muted-foreground truncate">{contact.company}</div>
+                      <div className="flex items-center gap-2 mt-1.5">
+                        <div className={cn("text-[10px] border rounded-full px-2 py-0.5 font-medium", getStatusColor(contact.status))}>
+                          {contact.status}
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Progress value={contact.score} className="w-12 h-1" />
+                          <span className="text-[10px] text-muted-foreground">{contact.score}</span>
                         </div>
                       </div>
-                    </td>
-                    <td className="py-3 px-4">
-                      <div className="text-sm">{contact.company}</div>
-                    </td>
-                    <td className="py-3 px-4">
-                      <div className={cn("text-xs border rounded-full px-2.5 py-1 font-medium w-fit", getStatusColor(contact.status))}>
-                        {contact.status}
-                      </div>
-                    </td>
-                    <td className="py-3 px-4">
-                      <div className="flex items-center gap-2">
-                        <Progress value={contact.score} className="w-16 h-1.5" />
-                        <span className="text-xs text-muted-foreground">{contact.score}</span>
-                      </div>
-                    </td>
-                    <td className="py-3 px-4">
-                      <span className="text-sm font-medium">{contact.revenue > 0 ? formatCurrency(contact.revenue) : "—"}</span>
-                    </td>
-                    <td className="py-3 px-4">
-                      <div className="flex gap-1 flex-wrap">
-                        {contact.tags.slice(0, 2).map((tag) => (
-                          <span key={tag} className="text-[10px] bg-secondary rounded-full px-2 py-0.5 text-muted-foreground">{tag}</span>
-                        ))}
-                        {contact.tags.length > 2 && (
-                          <span className="text-[10px] text-muted-foreground">+{contact.tags.length - 2}</span>
-                        )}
-                      </div>
-                    </td>
-                    <td className="py-3 px-4">
-                      <Button variant="ghost" size="icon" className="w-7 h-7 opacity-0 group-hover:opacity-100">
-                        <MoreHorizontal className="w-4 h-4" />
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
+                  </div>
+                </button>
+              ))}
+            </div>
           </div>
         ) : (
           /* Pipeline View */

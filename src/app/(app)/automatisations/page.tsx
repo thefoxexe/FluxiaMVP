@@ -75,9 +75,9 @@ export default function AutomatisationsPage() {
     <div>
       <Header title="Automatisations" subtitle="Créez des workflows qui font tourner votre business tout seul" />
 
-      <div className="p-6 space-y-6">
+      <div className="p-4 lg:p-6 space-y-4 lg:space-y-6">
         {/* Stats */}
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
           {[
             { label: "Actives", value: activeCount, icon: Activity, color: "text-green-400", bg: "bg-green-500/10" },
             { label: "En pause", value: automations.length - activeCount, icon: Pause, color: "text-yellow-400", bg: "bg-yellow-500/10" },
@@ -98,14 +98,14 @@ export default function AutomatisationsPage() {
           ))}
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-6">
+        <div className="grid lg:grid-cols-3 gap-4 lg:gap-6">
           {/* Active Automations */}
           <div className="lg:col-span-2 space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="text-sm font-semibold">Mes automatisations</h2>
               <Button variant="gradient" size="sm" className="gap-2">
                 <Plus className="w-4 h-4" />
-                Créer un workflow
+                <span className="hidden sm:inline">Créer un workflow</span>
               </Button>
             </div>
 
