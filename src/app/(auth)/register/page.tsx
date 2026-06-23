@@ -91,7 +91,7 @@ export default function RegisterPage() {
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="w-full max-w-lg">
         <div className="flex items-center gap-2 justify-center mb-10">
-          <div className="w-8 h-8 rounded-lg bg-violet-600 flex items-center justify-center">
+          <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
             <Zap className="w-4 h-4 text-white" />
           </div>
           <span className="font-semibold">Fluxia</span>
@@ -103,15 +103,15 @@ export default function RegisterPage() {
             <React.Fragment key={s}>
               <div className="flex items-center gap-2">
                 <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-medium transition-all ${
-                  i < step ? "bg-violet-600 text-white" :
-                  i === step ? "bg-violet-600 text-white ring-2 ring-violet-600/20 ring-offset-2 ring-offset-background" :
+                  i < step ? "bg-blue-600 text-white" :
+                  i === step ? "bg-blue-600 text-white ring-2 ring-blue-600/20 ring-offset-2 ring-offset-background" :
                   "bg-secondary text-muted-foreground"
                 }`}>
                   {i < step ? <Check className="w-3.5 h-3.5" /> : i + 1}
                 </div>
                 <span className={`text-xs hidden sm:block ${i === step ? "text-foreground font-medium" : "text-muted-foreground"}`}>{s}</span>
               </div>
-              {i < STEPS.length - 1 && <div className={`h-px flex-1 ${i < step ? "bg-violet-600" : "bg-border"}`} />}
+              {i < STEPS.length - 1 && <div className={`h-px flex-1 ${i < step ? "bg-blue-600" : "bg-border"}`} />}
             </React.Fragment>
           ))}
         </div>
@@ -265,7 +265,7 @@ export default function RegisterPage() {
                   { value: "autonome" as const, label: "Autonome", desc: "L'IA gère l'ensemble du workflow. Réponses emails, devis, relances. Supervision minimale." },
                 ].map((m) => (
                   <label key={m.value} className={`flex items-start gap-3 p-3.5 rounded-lg border cursor-pointer transition-colors ${
-                    form.aiMode === m.value ? "border-violet-600/50 bg-violet-600/5" : "border-border hover:border-white/10"
+                    form.aiMode === m.value ? "border-blue-600/50 bg-blue-600/5" : "border-border hover:border-white/10"
                   }`}>
                     <input
                       type="radio"
@@ -273,17 +273,17 @@ export default function RegisterPage() {
                       value={m.value}
                       checked={form.aiMode === m.value}
                       onChange={() => setForm((f) => ({ ...f, aiMode: m.value }))}
-                      className="mt-1 accent-violet-600 sr-only"
+                      className="mt-1 accent-blue-600 sr-only"
                     />
                     <div className={`w-4 h-4 rounded-full border-2 mt-0.5 flex items-center justify-center shrink-0 ${
-                      form.aiMode === m.value ? "border-violet-600 bg-violet-600" : "border-border"
+                      form.aiMode === m.value ? "border-blue-600 bg-blue-600" : "border-border"
                     }`}>
                       {form.aiMode === m.value && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
                     </div>
                     <div>
                       <div className="flex items-center gap-2 mb-0.5">
                         <span className="text-sm font-medium">{m.label}</span>
-                        {m.recommended && <span className="text-[10px] bg-violet-600/15 text-violet-400 border border-violet-600/20 rounded px-1.5 py-0.5">Recommandé</span>}
+                        {m.recommended && <span className="text-[10px] bg-blue-600/15 text-blue-400 border border-blue-600/20 rounded px-1.5 py-0.5">Recommandé</span>}
                       </div>
                       <p className="text-xs text-muted-foreground leading-relaxed">{m.desc}</p>
                     </div>
@@ -301,7 +301,7 @@ export default function RegisterPage() {
         {step === 0 && (
           <p className="text-center text-sm text-muted-foreground mt-5">
             Déjà un compte ?{" "}
-            <Link href="/login" className="text-violet-400 hover:underline">Se connecter</Link>
+            <Link href="/login" className="text-blue-400 hover:underline">Se connecter</Link>
           </p>
         )}
       </div>

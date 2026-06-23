@@ -165,14 +165,14 @@ export default function AssistantPage() {
               {messages.map((msg, i) => (
                 <div key={i} className={cn("flex gap-3", msg.role === "user" ? "justify-end" : "justify-start")}>
                   {msg.role === "assistant" && (
-                    <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center shrink-0 mt-1">
+                    <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shrink-0 mt-1">
                       <Sparkles className="w-4 h-4 text-white" />
                     </div>
                   )}
                   <div className={cn(
                     "max-w-[85%] rounded-2xl px-4 py-3",
                     msg.role === "user"
-                      ? "bg-violet-600 text-white rounded-tr-sm"
+                      ? "bg-blue-600 text-white rounded-tr-sm"
                       : "bg-card border border-border rounded-tl-sm"
                   )}>
                     {msg.role === "assistant" && !msg.content && isStreaming ? (
@@ -180,7 +180,7 @@ export default function AssistantPage() {
                         {[0, 1, 2].map((j) => (
                           <div
                             key={j}
-                            className="w-2 h-2 rounded-full bg-violet-400 animate-bounce"
+                            className="w-2 h-2 rounded-full bg-blue-400 animate-bounce"
                             style={{ animationDelay: `${j * 150}ms` }}
                           />
                         ))}
@@ -191,7 +191,7 @@ export default function AssistantPage() {
                         dangerouslySetInnerHTML={{ __html: formatMessage(msg.content) }}
                       />
                     )}
-                    <div className={cn("text-[10px] mt-1.5", msg.role === "user" ? "text-violet-200" : "text-muted-foreground")}>
+                    <div className={cn("text-[10px] mt-1.5", msg.role === "user" ? "text-blue-200" : "text-muted-foreground")}>
                       {msg.timestamp}
                     </div>
                   </div>
@@ -215,9 +215,9 @@ export default function AssistantPage() {
                     <button
                       key={s.text}
                       onClick={() => sendMessage(s.text)}
-                      className="flex items-center gap-2 p-2.5 rounded-lg border border-border text-left hover:border-violet-500/30 hover:bg-violet-500/5 transition-colors text-xs text-muted-foreground hover:text-foreground"
+                      className="flex items-center gap-2 p-2.5 rounded-lg border border-border text-left hover:border-blue-500/30 hover:bg-blue-500/5 transition-colors text-xs text-muted-foreground hover:text-foreground"
                     >
-                      <s.icon className="w-3.5 h-3.5 text-violet-400 shrink-0" />
+                      <s.icon className="w-3.5 h-3.5 text-blue-400 shrink-0" />
                       <span className="line-clamp-2">{s.text}</span>
                     </button>
                   ))}
@@ -257,7 +257,7 @@ export default function AssistantPage() {
                     <button
                       key={s.text}
                       onClick={() => { setInput(s.text); textareaRef.current?.focus(); }}
-                      className="text-[11px] text-muted-foreground hover:text-violet-400 transition-colors whitespace-nowrap"
+                      className="text-[11px] text-muted-foreground hover:text-blue-400 transition-colors whitespace-nowrap"
                     >
                       {s.text}
                     </button>
@@ -280,7 +280,7 @@ export default function AssistantPage() {
               icon: FileText,
               title: "Devis & Factures",
               items: ["Voir les devis non signés", "Factures impayées", "Générer une relance"],
-              color: "text-violet-400",
+              color: "text-blue-400",
             },
             {
               icon: Users,
@@ -322,10 +322,10 @@ export default function AssistantPage() {
             </div>
           ))}
 
-          <div className="p-3 rounded-lg border border-violet-500/20 bg-violet-500/5">
+          <div className="p-3 rounded-lg border border-blue-500/20 bg-blue-500/5">
             <div className="flex items-center gap-2 mb-2">
-              <Zap className="w-3.5 h-3.5 text-violet-400" />
-              <span className="text-xs font-medium text-violet-300">IA connectée</span>
+              <Zap className="w-3.5 h-3.5 text-blue-400" />
+              <span className="text-xs font-medium text-blue-300">IA connectée</span>
             </div>
             <p className="text-[11px] text-muted-foreground mb-2">
               L'assistant a accès à vos données en temps réel et répond avec les vraies informations de votre business.

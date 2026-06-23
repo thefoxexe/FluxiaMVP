@@ -44,7 +44,7 @@ export default function LoginPage() {
       {/* Left panel */}
       <div className="hidden lg:flex w-80 xl:w-96 flex-col border-r border-border p-8 bg-card">
         <div className="flex items-center gap-2.5 mb-auto">
-          <div className="w-8 h-8 rounded-lg bg-violet-600 flex items-center justify-center">
+          <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
             <Zap className="w-4 h-4 text-white" />
           </div>
           <span className="font-semibold">Fluxia</span>
@@ -63,8 +63,8 @@ export default function LoginPage() {
             "Rapports financiers en temps réel",
           ].map((feature) => (
             <div key={feature} className="flex items-center gap-2.5">
-              <div className="w-4 h-4 rounded-full bg-violet-600/20 border border-violet-600/30 flex items-center justify-center shrink-0">
-                <div className="w-1.5 h-1.5 rounded-full bg-violet-400" />
+              <div className="w-4 h-4 rounded-full bg-blue-600/20 border border-blue-600/30 flex items-center justify-center shrink-0">
+                <div className="w-1.5 h-1.5 rounded-full bg-blue-400" />
               </div>
               <span className="text-sm text-muted-foreground">{feature}</span>
             </div>
@@ -73,8 +73,8 @@ export default function LoginPage() {
 
         <div className="mt-auto">
           <div className="flex items-center gap-3 p-3 rounded-lg bg-secondary border border-border">
-            <div className="w-8 h-8 rounded-full bg-violet-600/20 border border-violet-600/30 flex items-center justify-center shrink-0">
-              <span className="text-xs font-semibold text-violet-400">JD</span>
+            <div className="w-8 h-8 rounded-full bg-blue-600/20 border border-blue-600/30 flex items-center justify-center shrink-0">
+              <span className="text-xs font-semibold text-blue-400">JD</span>
             </div>
             <div>
               <div className="text-xs font-medium">Jean Dupont, Dupont Bâtiment SA</div>
@@ -90,7 +90,7 @@ export default function LoginPage() {
       <div className="flex-1 flex items-center justify-center p-6">
         <div className="w-full max-w-sm space-y-6">
           <div className="lg:hidden flex items-center gap-2 mb-2">
-            <div className="w-7 h-7 rounded-lg bg-violet-600 flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center">
               <Zap className="w-3.5 h-3.5 text-white" />
             </div>
             <span className="font-semibold">Fluxia</span>
@@ -100,7 +100,7 @@ export default function LoginPage() {
             <h2 className="text-xl font-bold mb-1">Connexion</h2>
             <p className="text-sm text-muted-foreground">
               Pas encore de compte ?{" "}
-              <Link href="/register" className="text-violet-400 hover:underline">
+              <Link href="/register" className="text-blue-400 hover:underline">
                 Créer un compte
               </Link>
             </p>

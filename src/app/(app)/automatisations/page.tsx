@@ -30,8 +30,8 @@ const TEMPLATES = [
     icon: Mail,
     title: "Réponse automatique aux prospects",
     description: "Envoie une réponse personnalisée IA à chaque nouveau prospect qui vous écrit.",
-    color: "text-violet-400",
-    bg: "bg-violet-500/10",
+    color: "text-blue-400",
+    bg: "bg-blue-500/10",
     complexity: "Simple",
   },
   {
@@ -101,7 +101,7 @@ export default function AutomatisationsPage() {
           {[
             { label: "Actives", value: activeCount, icon: Activity, color: "text-green-400", bg: "bg-green-500/10" },
             { label: "En pause", value: automations.length - activeCount, icon: Pause, color: "text-yellow-400", bg: "bg-yellow-500/10" },
-            { label: "Exécutions totales", value: totalRuns, icon: Zap, color: "text-violet-400", bg: "bg-violet-500/10" },
+            { label: "Exécutions totales", value: totalRuns, icon: Zap, color: "text-blue-400", bg: "bg-blue-500/10" },
             { label: "Heures économisées", value: `~${Math.round(totalRuns * 0.3)}h`, icon: Clock, color: "text-cyan-400", bg: "bg-cyan-500/10" },
           ].map((stat) => (
             <Card key={stat.label} className="card-hover">
@@ -149,14 +149,14 @@ export default function AutomatisationsPage() {
                       className={cn(
                         "p-4 rounded-xl border transition-all",
                         auto.is_active
-                          ? "border-border bg-card hover:border-violet-500/20"
+                          ? "border-border bg-card hover:border-blue-500/20"
                           : "border-border/50 bg-card/50 opacity-70"
                       )}
                     >
                       <div className="flex items-start gap-4">
                         <div className={cn(
                           "w-9 h-9 rounded-lg flex items-center justify-center shrink-0 mt-0.5",
-                          auto.is_active ? "bg-violet-500/10 text-violet-400" : "bg-secondary text-muted-foreground"
+                          auto.is_active ? "bg-blue-500/10 text-blue-400" : "bg-secondary text-muted-foreground"
                         )}>
                           {TRIGGER_ICONS[auto.trigger_type] ?? <Workflow className="w-4 h-4" />}
                         </div>
@@ -172,7 +172,7 @@ export default function AutomatisationsPage() {
 
                           <div className="flex items-center gap-2 flex-wrap">
                             <div className="flex items-center gap-1.5 text-[10px] bg-secondary rounded-full px-2.5 py-1">
-                              <div className="w-1.5 h-1.5 rounded-full bg-violet-400" />
+                              <div className="w-1.5 h-1.5 rounded-full bg-blue-400" />
                               {auto.trigger_type.replace(/_/g, " ")}
                             </div>
                             {actions.map((action, i) => (
@@ -222,7 +222,7 @@ export default function AutomatisationsPage() {
               {TEMPLATES.map((tpl) => (
                 <div
                   key={tpl.title}
-                  className="p-4 rounded-xl border border-border hover:border-violet-500/20 transition-colors cursor-pointer"
+                  className="p-4 rounded-xl border border-border hover:border-blue-500/20 transition-colors cursor-pointer"
                 >
                   <div className="flex items-start gap-3">
                     <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center shrink-0", tpl.bg)}>
@@ -233,7 +233,7 @@ export default function AutomatisationsPage() {
                       <p className="text-[10px] text-muted-foreground leading-relaxed">{tpl.description}</p>
                       <div className="flex items-center justify-between mt-2">
                         <Badge variant="secondary" className="text-[10px]">{tpl.complexity}</Badge>
-                        <Button variant="ghost" size="sm" className="h-6 text-[10px] text-violet-400">
+                        <Button variant="ghost" size="sm" className="h-6 text-[10px] text-blue-400">
                           Utiliser <ChevronRight className="w-3 h-3" />
                         </Button>
                       </div>
@@ -243,10 +243,10 @@ export default function AutomatisationsPage() {
               ))}
             </div>
 
-            <div className="p-4 rounded-xl border border-violet-500/20 bg-violet-500/5">
+            <div className="p-4 rounded-xl border border-blue-500/20 bg-blue-500/5">
               <div className="flex items-center gap-2 mb-2">
-                <Zap className="w-4 h-4 text-violet-400" />
-                <span className="text-xs font-medium text-violet-300">Suggestion IA</span>
+                <Zap className="w-4 h-4 text-blue-400" />
+                <span className="text-xs font-medium text-blue-300">Suggestion IA</span>
               </div>
               <p className="text-xs text-muted-foreground mb-3">
                 Activez la relance automatique pour les devis sans réponse après 5 jours et augmentez votre taux de conversion.

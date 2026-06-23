@@ -127,7 +127,7 @@ export default function RapportsPage() {
                 onClick={() => setPeriod(p)}
                 className={cn(
                   "px-3 py-1.5 rounded-lg text-xs font-medium transition-colors",
-                  period === p ? "bg-violet-500/20 text-violet-300 border border-violet-500/30" : "text-muted-foreground hover:text-foreground"
+                  period === p ? "bg-blue-500/20 text-blue-300 border border-blue-500/30" : "text-muted-foreground hover:text-foreground"
                 )}
               >
                 {p}
@@ -136,7 +136,7 @@ export default function RapportsPage() {
           </div>
           <div className="flex gap-2">
             <Button variant="outline" size="sm" className="gap-2">
-              <Zap className="w-3.5 h-3.5 text-violet-400" />
+              <Zap className="w-3.5 h-3.5 text-blue-400" />
               <span className="hidden sm:inline">Rapport IA</span>
             </Button>
             <Button variant="outline" size="sm" className="gap-2">
@@ -173,7 +173,7 @@ export default function RapportsPage() {
               <div className="flex items-center justify-between">
                 <CardTitle className="text-sm font-semibold">Revenus vs Dépenses estimées</CardTitle>
                 <div className="flex gap-4 text-xs text-muted-foreground">
-                  <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-violet-500 inline-block" />Revenus</span>
+                  <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-blue-500 inline-block" />Revenus</span>
                   <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-red-500/60 inline-block" />Dépenses</span>
                 </div>
               </div>
@@ -185,7 +185,7 @@ export default function RapportsPage() {
                   <XAxis dataKey="month" tick={{ fontSize: 11, fill: "#64748b" }} axisLine={false} tickLine={false} />
                   <YAxis tick={{ fontSize: 11, fill: "#64748b" }} axisLine={false} tickLine={false} tickFormatter={(v) => `${v / 1000}k`} />
                   <Tooltip content={<ChartTooltip />} />
-                  <Bar dataKey="revenue" name="Revenus" fill="#7c3aed" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="revenue" name="Revenus" fill="#3b82f6" radius={[4, 4, 0, 0]} />
                   <Bar dataKey="expenses" name="Dépenses" fill="#ef4444" fillOpacity={0.6} radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
@@ -238,7 +238,7 @@ export default function RapportsPage() {
                   <XAxis dataKey="month" tick={{ fontSize: 11, fill: "#64748b" }} axisLine={false} tickLine={false} />
                   <YAxis tick={{ fontSize: 11, fill: "#64748b" }} axisLine={false} tickLine={false} />
                   <Tooltip content={<ChartTooltip />} />
-                  <Bar dataKey="sent" name="Envoyés" fill="#7c3aed" fillOpacity={0.5} radius={[3, 3, 0, 0]} />
+                  <Bar dataKey="sent" name="Envoyés" fill="#3b82f6" fillOpacity={0.5} radius={[3, 3, 0, 0]} />
                   <Bar dataKey="accepted" name="Acceptés" fill="#34d399" radius={[3, 3, 0, 0]} />
                   <Bar dataKey="refused" name="Refusés" fill="#ef4444" fillOpacity={0.7} radius={[3, 3, 0, 0]} />
                 </BarChart>
@@ -278,13 +278,13 @@ export default function RapportsPage() {
         </div>
 
         {/* AI Insights */}
-        <Card className="border-violet-500/20 bg-gradient-to-br from-violet-500/5 to-indigo-500/5">
+        <Card className="border-blue-500/20 bg-gradient-to-br from-blue-500/5 to-blue-500/5">
           <CardHeader className="pb-3">
             <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center">
+              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
                 <Zap className="w-3.5 h-3.5 text-white" />
               </div>
-              <CardTitle className="text-sm font-semibold text-violet-300">Insights IA</CardTitle>
+              <CardTitle className="text-sm font-semibold text-blue-300">Insights IA</CardTitle>
             </div>
           </CardHeader>
           <CardContent>

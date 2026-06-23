@@ -82,7 +82,7 @@ export default function DevisPage() {
         {/* Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           {[
-            { label: "Total devis", value: quotes.length, icon: FileText, color: "text-violet-400", bg: "bg-violet-500/10" },
+            { label: "Total devis", value: quotes.length, icon: FileText, color: "text-blue-400", bg: "bg-blue-500/10" },
             { label: "Montant total", value: formatCurrency(quotes.reduce((s, q) => s + q.total, 0)), icon: TrendingUp, color: "text-green-400", bg: "bg-green-500/10" },
             { label: "En attente", value: pending.length, icon: Clock, color: "text-yellow-400", bg: "bg-yellow-500/10" },
             { label: "Taux d'acceptation", value: `${rate}%`, icon: CheckCircle, color: "text-cyan-400", bg: "bg-cyan-500/10" },
@@ -107,7 +107,7 @@ export default function DevisPage() {
               <Input placeholder="Rechercher un devis..." className="pl-9 h-9 text-sm" value={search} onChange={(e) => setSearch(e.target.value)} />
             </div>
             <Button variant="outline" size="sm" className="gap-1.5 h-9 shrink-0">
-              <Zap className="w-3.5 h-3.5 text-violet-400" />
+              <Zap className="w-3.5 h-3.5 text-blue-400" />
               <span className="hidden sm:inline text-xs">Devis IA</span>
             </Button>
             <Button size="sm" className="gap-1.5 h-9 shrink-0">
@@ -117,7 +117,7 @@ export default function DevisPage() {
           </div>
           <div className="flex gap-1 overflow-x-auto pb-1">
             {["tous", "brouillon", "envoyé", "consulté", "accepté", "refusé", "expiré"].map((s) => (
-              <button key={s} onClick={() => setStatusFilter(s)} className={cn("px-3 py-1.5 rounded-md text-xs font-medium transition-colors capitalize whitespace-nowrap shrink-0", statusFilter === s ? "bg-violet-600/15 text-violet-400 border border-violet-600/20" : "bg-secondary text-muted-foreground hover:text-foreground")}>
+              <button key={s} onClick={() => setStatusFilter(s)} className={cn("px-3 py-1.5 rounded-md text-xs font-medium transition-colors capitalize whitespace-nowrap shrink-0", statusFilter === s ? "bg-blue-600/15 text-blue-400 border border-blue-600/20" : "bg-secondary text-muted-foreground hover:text-foreground")}>
                 {s === "tous" ? "Tous" : s}
               </button>
             ))}
@@ -150,7 +150,7 @@ export default function DevisPage() {
                 <tbody className="divide-y divide-border">
                   {filtered.map((quote) => (
                     <tr key={quote.id} className="hover:bg-secondary/20 transition-colors cursor-pointer group" onClick={() => setSelectedQuote(quote)}>
-                      <td className="py-3 px-4 text-sm font-medium text-violet-400">{quote.number}</td>
+                      <td className="py-3 px-4 text-sm font-medium text-blue-400">{quote.number}</td>
                       <td className="py-3 px-4 text-sm text-muted-foreground">{quote.title ?? "—"}</td>
                       <td className="py-3 px-4">
                         <span className={cn("text-[11px] border rounded-full px-2 py-0.5 font-medium", STATUS_COLORS[quote.status])}>
@@ -243,7 +243,7 @@ export default function DevisPage() {
                       <tfoot className="bg-secondary/20">
                         <tr><td colSpan={3} className="py-2 px-3 text-xs text-muted-foreground">Sous-total</td><td className="py-2 px-3 text-right text-sm">{formatCurrency(selectedQuote.subtotal)}</td></tr>
                         <tr><td colSpan={3} className="py-2 px-3 text-xs text-muted-foreground">TVA {selectedQuote.tax_rate}%</td><td className="py-2 px-3 text-right text-sm">{formatCurrency(selectedQuote.tax_amount)}</td></tr>
-                        <tr><td colSpan={3} className="py-2.5 px-3 text-sm font-bold">Total TTC</td><td className="py-2.5 px-3 text-right text-base font-bold text-violet-400">{formatCurrency(selectedQuote.total)}</td></tr>
+                        <tr><td colSpan={3} className="py-2.5 px-3 text-sm font-bold">Total TTC</td><td className="py-2.5 px-3 text-right text-base font-bold text-blue-400">{formatCurrency(selectedQuote.total)}</td></tr>
                       </tfoot>
                     </table>
                   </div>

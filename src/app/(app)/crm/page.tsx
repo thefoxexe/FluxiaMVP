@@ -47,7 +47,7 @@ function formatCurrency(v: number) {
 function ContactAvatar({ name, size = "md" }: { name: string; size?: "sm" | "md" | "lg" }) {
   const sz = size === "sm" ? "w-7 h-7 text-[10px]" : size === "lg" ? "w-12 h-12 text-base" : "w-8 h-8 text-xs";
   return (
-    <div className={cn("rounded-full bg-violet-600/20 border border-violet-600/30 flex items-center justify-center font-semibold text-violet-400 shrink-0", sz)}>
+    <div className={cn("rounded-full bg-blue-600/20 border border-blue-600/30 flex items-center justify-center font-semibold text-blue-400 shrink-0", sz)}>
       {initials(name)}
     </div>
   );
@@ -112,7 +112,7 @@ export default function CRMPage() {
         {/* Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           {[
-            { label: "Total contacts", value: contacts.length, icon: Users, color: "text-violet-400", bg: "bg-violet-500/10" },
+            { label: "Total contacts", value: contacts.length, icon: Users, color: "text-blue-400", bg: "bg-blue-500/10" },
             { label: "Clients actifs", value: contacts.filter((c) => c.status === "gagné").length, icon: Star, color: "text-green-400", bg: "bg-green-500/10" },
             { label: "Prospects chauds", value: contacts.filter((c) => c.score >= 70 && c.status !== "gagné").length, icon: TrendingUp, color: "text-yellow-400", bg: "bg-yellow-500/10" },
             { label: "CA clients", value: formatCurrency(contacts.reduce((s, c) => s + (c.revenue ?? 0), 0)), icon: ArrowUpRight, color: "text-cyan-400", bg: "bg-cyan-500/10" },
@@ -153,7 +153,7 @@ export default function CRMPage() {
 
         {/* New Contact Form */}
         {showNewForm && (
-          <div className="p-4 rounded-lg border border-violet-600/30 bg-violet-600/5 space-y-3">
+          <div className="p-4 rounded-lg border border-blue-600/30 bg-blue-600/5 space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">Nouveau contact</span>
               <button onClick={() => setShowNewForm(false)} className="text-muted-foreground hover:text-foreground">
@@ -279,7 +279,7 @@ export default function CRMPage() {
                   </div>
                   <div className="space-y-2">
                     {stageContacts.map((contact) => (
-                      <div key={contact.id} className={cn("p-3 rounded-lg border cursor-pointer hover:border-violet-500/30 transition-colors", STAGE_COLORS[stage])} onClick={() => setSelectedContact(contact)}>
+                      <div key={contact.id} className={cn("p-3 rounded-lg border cursor-pointer hover:border-blue-500/30 transition-colors", STAGE_COLORS[stage])} onClick={() => setSelectedContact(contact)}>
                         <div className="flex items-center gap-2">
                           <ContactAvatar name={contact.name} size="sm" />
                           <div className="flex-1 min-w-0">
@@ -289,7 +289,7 @@ export default function CRMPage() {
                         </div>
                       </div>
                     ))}
-                    <button className="w-full py-2 rounded-lg border border-dashed border-border text-[11px] text-muted-foreground hover:text-foreground hover:border-violet-500/30 transition-colors" onClick={() => setShowNewForm(true)}>
+                    <button className="w-full py-2 rounded-lg border border-dashed border-border text-[11px] text-muted-foreground hover:text-foreground hover:border-blue-500/30 transition-colors" onClick={() => setShowNewForm(true)}>
                       + Ajouter
                     </button>
                   </div>
@@ -338,7 +338,7 @@ export default function CRMPage() {
               <div>
                 <div className="flex items-center justify-between mb-1.5">
                   <span className="text-xs font-medium">Score IA</span>
-                  <span className="text-xs font-bold text-violet-400">{selectedContact.score}/100</span>
+                  <span className="text-xs font-bold text-blue-400">{selectedContact.score}/100</span>
                 </div>
                 <Progress value={selectedContact.score} className="h-1.5" />
                 <p className="text-[11px] text-muted-foreground mt-1">

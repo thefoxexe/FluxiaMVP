@@ -6,11 +6,12 @@ import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard, Inbox, Users, FileText, CreditCard,
   CheckSquare, Calendar, Workflow, BarChart3, Settings,
-  Sparkles, ChevronLeft, ChevronRight, X, Zap, LogOut
+  Sparkles, ChevronLeft, ChevronRight, X, LogOut
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLayout } from "@/lib/layout-context";
 import { createClient } from "@/lib/supabase/client";
+import { FluxiaLogo } from "@/components/app/logo";
 
 const NAV_ITEMS = [
   { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
@@ -59,9 +60,7 @@ export function Sidebar() {
         "flex items-center h-14 px-3 border-b border-border shrink-0",
         collapsed ? "justify-center" : "gap-2.5"
       )}>
-        <div className="w-7 h-7 rounded-lg bg-violet-600 flex items-center justify-center shrink-0">
-          <Zap className="w-3.5 h-3.5 text-white" />
-        </div>
+        <FluxiaLogo size={28} />
         {!collapsed && (
           <div>
             <span className="text-sm font-semibold tracking-tight">Fluxia</span>
@@ -84,23 +83,23 @@ export function Sidebar() {
               className={cn(
                 "flex items-center gap-2.5 px-2.5 py-2 rounded-md text-sm transition-colors relative",
                 isActive
-                  ? "bg-violet-600/10 text-violet-300"
+                  ? "bg-blue-600/10 text-blue-300"
                   : "text-muted-foreground hover:bg-secondary hover:text-foreground"
               )}
             >
-              <item.icon className={cn("shrink-0 w-4 h-4", isActive ? "text-violet-400" : "")} />
+              <item.icon className={cn("shrink-0 w-4 h-4", isActive ? "text-blue-400" : "")} />
               {!collapsed && (
                 <>
                   <span className="flex-1">{item.label}</span>
                   {item.badge && (
-                    <span className="min-w-[18px] h-4 rounded bg-violet-600 text-white text-[10px] font-medium flex items-center justify-center px-1">
+                    <span className="min-w-[18px] h-4 rounded bg-blue-600 text-white text-[10px] font-medium flex items-center justify-center px-1">
                       {item.badge}
                     </span>
                   )}
                 </>
               )}
               {collapsed && item.badge && (
-                <span className="absolute top-0.5 right-0.5 w-3.5 h-3.5 rounded-full bg-violet-600 text-white text-[8px] font-medium flex items-center justify-center">
+                <span className="absolute top-0.5 right-0.5 w-3.5 h-3.5 rounded-full bg-blue-600 text-white text-[8px] font-medium flex items-center justify-center">
                   {item.badge}
                 </span>
               )}
@@ -118,7 +117,7 @@ export function Sidebar() {
           className={cn(
             "flex items-center gap-2.5 px-2.5 py-2 rounded-md text-sm transition-colors w-full",
             pathname === "/assistant"
-              ? "bg-violet-600/10 text-violet-300"
+              ? "bg-blue-600/10 text-blue-300"
               : "text-muted-foreground hover:bg-secondary hover:text-foreground"
           )}
         >
@@ -136,7 +135,7 @@ export function Sidebar() {
           className={cn(
             "flex items-center gap-2.5 px-2.5 py-2 rounded-md text-sm transition-colors",
             pathname === "/parametres"
-              ? "bg-violet-600/10 text-violet-300"
+              ? "bg-blue-600/10 text-blue-300"
               : "text-muted-foreground hover:bg-secondary hover:text-foreground"
           )}
         >

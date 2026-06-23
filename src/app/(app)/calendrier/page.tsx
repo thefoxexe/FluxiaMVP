@@ -93,7 +93,7 @@ export default function CalendrierPage() {
                 variant="ghost"
                 size="sm"
                 onClick={() => { setCurrentMonth(today.getMonth()); setCurrentYear(today.getFullYear()); setSelectedDay(today.getDate()); }}
-                className="text-xs text-violet-400"
+                className="text-xs text-blue-400"
               >
                 Auj.
               </Button>
@@ -129,13 +129,13 @@ export default function CalendrierPage() {
                     onClick={() => setSelectedDay(day)}
                     className={cn(
                       "h-24 lg:h-28 border-b border-r border-border p-1.5 cursor-pointer transition-colors overflow-hidden",
-                      isSelected ? "bg-violet-500/10" : "hover:bg-secondary/30",
+                      isSelected ? "bg-blue-500/10" : "hover:bg-secondary/30",
                       (day + firstDay) % 7 === 0 && "border-r-0"
                     )}
                   >
                     <div className={cn(
                       "w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium mb-1",
-                      isToday ? "bg-violet-500 text-white" : "text-foreground"
+                      isToday ? "bg-blue-500 text-white" : "text-foreground"
                     )}>
                       {day}
                     </div>
@@ -208,7 +208,7 @@ export default function CalendrierPage() {
                 {upcomingEvents.map((event) => {
                   const cfg = EVENT_TYPE_CONFIG[event.type] ?? EVENT_TYPE_CONFIG.reminder;
                   return (
-                    <div key={event.id} className="flex items-start gap-3 p-3 rounded-lg border border-border hover:border-violet-500/20 transition-colors">
+                    <div key={event.id} className="flex items-start gap-3 p-3 rounded-lg border border-border hover:border-blue-500/20 transition-colors">
                       <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center shrink-0 text-xs", event.color || cfg.defaultColor)}>
                         {cfg.icon}
                       </div>

@@ -113,7 +113,7 @@ export default function ParametresPage() {
               className={cn(
                 "flex items-center gap-2 lg:gap-3 w-full px-3 py-2 rounded-lg text-xs lg:text-sm transition-colors text-left whitespace-nowrap shrink-0 lg:shrink",
                 activeSection === item.id
-                  ? "bg-violet-500/15 text-violet-300"
+                  ? "bg-blue-500/15 text-blue-300"
                   : "text-muted-foreground hover:bg-secondary hover:text-foreground"
               )}
             >
@@ -135,7 +135,7 @@ export default function ParametresPage() {
                 </div>
 
                 <div className="flex items-center gap-5">
-                  <div className="w-16 h-16 rounded-full bg-violet-600/20 border border-violet-600/30 flex items-center justify-center text-lg font-bold text-violet-400">
+                  <div className="w-16 h-16 rounded-full bg-blue-600/20 border border-blue-600/30 flex items-center justify-center text-lg font-bold text-blue-400">
                     {profileForm.full_name ? profileForm.full_name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2) : "?"}
                   </div>
                   <div>
@@ -277,14 +277,14 @@ export default function ParametresPage() {
                       { id: "semi_autonome" as const, label: "Semi-autonome", desc: "L'IA gère les relances et le classement. Validation requise pour les emails clients." },
                       { id: "autonome" as const, label: "Autonome", desc: "L'IA gère tout le workflow. Supervision minimale. Pour utilisateurs avancés." },
                     ] as const).map((mode) => (
-                      <label key={mode.id} className="flex items-start gap-3 p-4 rounded-xl border border-border hover:border-violet-500/20 cursor-pointer has-[:checked]:border-violet-500/50 has-[:checked]:bg-violet-500/5 transition-all">
+                      <label key={mode.id} className="flex items-start gap-3 p-4 rounded-xl border border-border hover:border-blue-500/20 cursor-pointer has-[:checked]:border-blue-500/50 has-[:checked]:bg-blue-500/5 transition-all">
                         <input
                           type="radio"
                           name="ai_mode"
                           value={mode.id}
                           checked={aiMode === mode.id}
                           onChange={() => setAiMode(mode.id)}
-                          className="mt-1 accent-violet-600"
+                          className="mt-1 accent-blue-600"
                         />
                         <div>
                           <div className="text-sm font-medium mb-0.5">{mode.label}</div>
@@ -381,10 +381,10 @@ export default function ParametresPage() {
                   <p className="text-sm text-muted-foreground">Gérez votre abonnement Fluxia.</p>
                 </div>
 
-                <div className="p-5 rounded-lg border border-violet-600/30 bg-violet-600/5">
+                <div className="p-5 rounded-lg border border-blue-600/30 bg-blue-600/5">
                   <div className="flex items-center justify-between mb-3">
                     <div>
-                      <div className="text-xs text-violet-400 font-medium mb-1">Plan actuel</div>
+                      <div className="text-xs text-blue-400 font-medium mb-1">Plan actuel</div>
                       <div className="text-xl font-bold capitalize">{profile?.subscription_plan ?? "Free"}</div>
                     </div>
                     <Badge variant={profile?.subscription_status === "active" ? "success" : "secondary"} className="capitalize">
@@ -412,7 +412,7 @@ export default function ParametresPage() {
                         { name: "Team", price: "99", desc: "5 utilisateurs", highlight: true },
                         { name: "Business", price: "199", desc: "Illimité" },
                       ].map((plan) => (
-                        <div key={plan.name} className={cn("p-3 rounded-lg border text-center", plan.highlight ? "border-violet-600/50 bg-violet-600/5" : "border-border")}>
+                        <div key={plan.name} className={cn("p-3 rounded-lg border text-center", plan.highlight ? "border-blue-600/50 bg-blue-600/5" : "border-border")}>
                           <div className="text-xs font-semibold mb-1">{plan.name}</div>
                           <div className="text-lg font-bold">CHF {plan.price}</div>
                           <div className="text-[10px] text-muted-foreground mb-2">/mois · {plan.desc}</div>

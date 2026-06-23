@@ -10,7 +10,7 @@
     --card-foreground: 0 0% 97%;
     --popover: 0 0% 7%;
     --popover-foreground: 0 0% 97%;
-    --primary: 262 83% 58%;
+    --primary: 217 91% 60%;
     --primary-foreground: 0 0% 100%;
     --secondary: 0 0% 11%;
     --secondary-foreground: 0 0% 90%;
@@ -22,18 +22,20 @@
     --destructive-foreground: 0 0% 100%;
     --border: 0 0% 14%;
     --input: 0 0% 11%;
-    --ring: 262 83% 58%;
+    --ring: 217 91% 60%;
     --radius: 0.5rem;
   }
 }
 
 @layer base {
-  * { @apply border-border box-border; }
+  * { @apply border-border; }
   html { @apply scroll-smooth; }
   body {
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
+    box-sizing: border-box;
   }
+  *, *::before, *::after { box-sizing: border-box; }
   ::-webkit-scrollbar { width: 5px; height: 5px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { @apply bg-border rounded-full; }
@@ -43,13 +45,13 @@
 @layer utilities {
   .text-balance { text-wrap: balance; }
   .text-gradient {
-    @apply bg-gradient-to-r from-violet-400 to-violet-600 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent;
   }
   .card-hover {
     @apply transition-colors duration-150 hover:border-white/10;
   }
   .focus-ring {
-    @apply outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-1 focus-visible:ring-offset-background;
+    @apply outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1 focus-visible:ring-offset-background;
   }
 }
 
