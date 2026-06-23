@@ -149,7 +149,11 @@ export default function ParametresPage() {
     startTransition(async () => {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
-      if (user) { await supabase.from("profiles").update({ full_name: profileForm.full_name }).eq("id", user.id); show("Profil enregistré"); }
+      if (user) {
+        const { error } = await supabase.from("profiles").update({ full_name: profileForm.full_name }).eq("id", user.id);
+        if (error) alert("Erreur: " + error.message);
+        else show("Profil enregistré");
+      }
       setSaving(false);
     });
   };
@@ -157,8 +161,9 @@ export default function ParametresPage() {
   const saveCompany = () => {
     setSaving(true);
     startTransition(async () => {
-      await updateCompanyProfile(companyForm);
-      show("Entreprise enregistrée");
+      const res = await updateCompanyProfile(companyForm);
+      if (res.error) alert("Erreur sauvegarde entreprise: " + res.error);
+      else show("Entreprise enregistrée");
       setSaving(false);
     });
   };
@@ -167,7 +172,11 @@ export default function ParametresPage() {
     startTransition(async () => {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
-      if (user) { await supabase.from("profiles").update({ ai_mode: aiMode }).eq("id", user.id); show("Configuration IA enregistrée"); }
+      if (user) {
+        const { error } = await supabase.from("profiles").update({ ai_mode: aiMode }).eq("id", user.id);
+        if (error) alert("Erreur: " + error.message);
+        else show("Configuration IA enregistrée");
+      }
     });
   };
 
@@ -234,8 +243,9 @@ export default function ParametresPage() {
 
   const openStripePortal = async () => {
     const res = await fetch("/api/stripe/portal", { method: "POST" });
-    const { url } = await res.json().catch(() => ({}));
-    if (url) window.location.href = url;
+    const data = await res.json().catch(() => ({}));
+    if (data.url) window.location.href = data.url;
+    else alert(data.error ?? "Erreur: portail Stripe indisponible. Vérifiez votre abonnement.");
   };
 
   const openStripeCheckout = async (plan: string) => {
