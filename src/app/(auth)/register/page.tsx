@@ -20,7 +20,8 @@ export default function RegisterPage() {
 
   const [form, setForm] = useState({
     firstName: "", lastName: "", email: "", password: "",
-    company: "", contactEmail: "", phone: "", address: "", vat: "", currency: "CHF",
+    company: "", companyEmail: "", phone: "", address: "", city: "", zip: "",
+    country: "CH", vat: "", iban: "", website: "", currency: "CHF",
     aiMode: "semi_autonome" as "manuel" | "semi_autonome" | "autonome",
   });
 
@@ -61,10 +62,17 @@ export default function RegisterPage() {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         await supabase.from("profiles").update({
-          company_name: form.company,
-          company_phone: form.phone,
-          company_address: form.address,
-          company_vat: form.vat,
+          company_name: form.company || undefined,
+          company_phone: form.phone || undefined,
+          company_address: form.address || undefined,
+          company_city: form.city || undefined,
+          company_zip: form.zip || undefined,
+          company_country: form.country,
+          company_vat: form.vat || undefined,
+          company_email: form.companyEmail || undefined,
+          company_iban: form.iban || undefined,
+          company_website: form.website || undefined,
+          company_currency: form.currency,
         }).eq("id", user.id);
       }
       setStep(2);
@@ -202,17 +210,46 @@ export default function RegisterPage() {
                     <Input placeholder="Dupont & Associés SA" className="pl-9 h-9 text-sm" value={form.company} onChange={set("company")} />
                   </div>
                 </div>
-                <div className="space-y-1.5">
-                  <Label className="text-xs font-medium">Téléphone</Label>
-                  <Input placeholder="+41 79 000 00 00" className="h-9 text-sm" value={form.phone} onChange={set("phone")} />
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1.5">
+                    <Label className="text-xs font-medium">Email entreprise</Label>
+                    <Input type="email" placeholder="contact@entreprise.ch" className="h-9 text-sm" value={form.companyEmail} onChange={set("companyEmail")} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs font-medium">Téléphone</Label>
+                    <Input placeholder="+41 79 000 00 00" className="h-9 text-sm" value={form.phone} onChange={set("phone")} />
+                  </div>
                 </div>
                 <div className="space-y-1.5">
                   <Label className="text-xs font-medium">Adresse</Label>
-                  <Input placeholder="Rue de la Paix 1, 1204 Genève" className="h-9 text-sm" value={form.address} onChange={set("address")} />
+                  <Input placeholder="Rue de la Paix 1" className="h-9 text-sm" value={form.address} onChange={set("address")} />
                 </div>
-                <div className="space-y-1.5">
-                  <Label className="text-xs font-medium">Numéro TVA (optionnel)</Label>
-                  <Input placeholder="CHE-123.456.789 TVA" className="h-9 text-sm" value={form.vat} onChange={set("vat")} />
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="space-y-1.5">
+                    <Label className="text-xs font-medium">CP</Label>
+                    <Input placeholder="1204" className="h-9 text-sm" value={form.zip} onChange={set("zip")} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs font-medium">Ville</Label>
+                    <Input placeholder="Genève" className="h-9 text-sm" value={form.city} onChange={set("city")} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs font-medium">Pays</Label>
+                    <select className="w-full h-9 rounded-md border border-input bg-background px-3 text-sm" value={form.country} onChange={set("country")}>
+                      <option value="CH">Suisse</option><option value="FR">France</option>
+                      <option value="BE">Belgique</option><option value="DE">Allemagne</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1.5">
+                    <Label className="text-xs font-medium">N° TVA (optionnel)</Label>
+                    <Input placeholder="CHE-123.456.789 TVA" className="h-9 text-sm" value={form.vat} onChange={set("vat")} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs font-medium">IBAN (optionnel)</Label>
+                    <Input placeholder="CH56 0483 5012 3456 7800 9" className="h-9 text-sm" value={form.iban} onChange={set("iban")} />
+                  </div>
                 </div>
                 <Button type="submit" className="w-full h-9 gap-2" disabled={isPending}>
                   {isPending ? "Sauvegarde..." : "Continuer"}

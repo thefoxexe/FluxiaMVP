@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useTransition } from "react";
 import {
   Plus, Search, Send, CheckCircle, Clock, AlertTriangle,
-  XCircle, Trash2, CreditCard, TrendingUp, ArrowUpRight, FileText, X
+  XCircle, Trash2, CreditCard, TrendingUp, ArrowUpRight, FileText, X, Printer
 } from "lucide-react";
 import { Header } from "@/components/app/header";
 import { Button } from "@/components/ui/button";
@@ -224,6 +224,8 @@ export default function FacturesPage() {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end" className="text-xs">
+                            <DropdownMenuItem className="text-xs" onClick={() => window.open(`/facture/${inv.id}`, "_blank")}><Printer className="w-3.5 h-3.5" />Voir / Imprimer PDF</DropdownMenuItem>
+                            <DropdownMenuSeparator />
                             <DropdownMenuItem className="text-xs" onClick={() => handleMarkPaid(inv.id)}><CheckCircle className="w-3.5 h-3.5" />Marquer payée</DropdownMenuItem>
                             <DropdownMenuItem className="text-xs" onClick={() => handleSend(inv.id)}><Send className="w-3.5 h-3.5" />Envoyer</DropdownMenuItem>
                             <DropdownMenuSeparator />

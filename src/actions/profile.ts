@@ -3,6 +3,15 @@
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 
+export async function updateProfile(input: { full_name?: string }) {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Unauthorized" };
+  const { error } = await supabase.from("profiles").update(input).eq("id", user.id);
+  if (!error) revalidatePath("/parametres");
+  return { error: error?.message };
+}
+
 export async function updateCompanyProfile(input: {
   company_name?: string;
   company_phone?: string;
@@ -12,12 +21,33 @@ export async function updateCompanyProfile(input: {
   company_country?: string;
   company_vat?: string;
   company_website?: string;
+  company_email?: string;
+  company_iban?: string;
+  company_currency?: string;
 }) {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { error: "Unauthorized" };
 
   const { error } = await supabase.from("profiles").update(input).eq("id", user.id);
+  if (!error) revalidatePath("/parametres");
+  return { error: error?.message };
+}
+
+export async function updateLogoUrl(url: string) {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Unauthorized" };
+  const { error } = await supabase.from("profiles").update({ company_logo_url: url }).eq("id", user.id);
+  if (!error) revalidatePath("/parametres");
+  return { error: error?.message };
+}
+
+export async function updateInvoiceTemplate(template: string) {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Unauthorized" };
+  const { error } = await supabase.from("profiles").update({ invoice_template: template }).eq("id", user.id);
   if (!error) revalidatePath("/parametres");
   return { error: error?.message };
 }
@@ -37,7 +67,7 @@ export async function generateApiKey() {
   crypto.getRandomValues(array);
   const key = "flx_live_" + Buffer.from(array).toString("base64url");
 
-  const { error } = await supabase.from("profiles").update({ stripe_customer_id: key }).eq("id", user.id);
+  const { error } = await supabase.from("profiles").update({ api_key: key }).eq("id", user.id);
   if (error) return { error: error.message };
 
   revalidatePath("/parametres");

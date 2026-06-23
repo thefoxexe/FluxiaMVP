@@ -17,6 +17,9 @@ export type Database = {
           company_phone: string | null;
           company_website: string | null;
           company_vat: string | null;
+          company_email: string | null;
+          company_iban: string | null;
+          company_currency: string;
           stripe_customer_id: string | null;
           stripe_subscription_id: string | null;
           subscription_plan: "free" | "solo" | "team" | "business";
@@ -25,6 +28,8 @@ export type Database = {
           avatar_url: string | null;
           onboarding_completed: boolean;
           ai_mode: "manuel" | "semi_autonome" | "autonome";
+          api_key: string | null;
+          invoice_template: string;
           created_at: string;
           updated_at: string;
         };
@@ -41,6 +46,9 @@ export type Database = {
           company_phone?: string | null;
           company_website?: string | null;
           company_vat?: string | null;
+          company_email?: string | null;
+          company_iban?: string | null;
+          company_currency?: string;
           stripe_customer_id?: string | null;
           stripe_subscription_id?: string | null;
           subscription_plan?: "free" | "solo" | "team" | "business";
@@ -49,6 +57,8 @@ export type Database = {
           avatar_url?: string | null;
           onboarding_completed?: boolean;
           ai_mode?: "manuel" | "semi_autonome" | "autonome";
+          api_key?: string | null;
+          invoice_template?: string;
           created_at?: string;
           updated_at?: string;
         };
@@ -65,6 +75,9 @@ export type Database = {
           company_phone?: string | null;
           company_website?: string | null;
           company_vat?: string | null;
+          company_email?: string | null;
+          company_iban?: string | null;
+          company_currency?: string;
           stripe_customer_id?: string | null;
           stripe_subscription_id?: string | null;
           subscription_plan?: "free" | "solo" | "team" | "business";
@@ -73,6 +86,8 @@ export type Database = {
           avatar_url?: string | null;
           onboarding_completed?: boolean;
           ai_mode?: "manuel" | "semi_autonome" | "autonome";
+          api_key?: string | null;
+          invoice_template?: string;
           created_at?: string;
           updated_at?: string;
         };

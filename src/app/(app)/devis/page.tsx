@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useTransition } from "react";
 import {
   Plus, Search, Eye, Send, Download, Trash2, FileText,
-  CheckCircle, Clock, Zap, TrendingUp, X, Sparkles, Loader2
+  CheckCircle, Clock, Zap, TrendingUp, X, Sparkles, Loader2, Printer
 } from "lucide-react";
 import { Header } from "@/components/app/header";
 import { Button } from "@/components/ui/button";
@@ -247,7 +247,9 @@ export default function DevisPage() {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end" className="text-xs">
-                            <DropdownMenuItem className="text-xs" onClick={() => setSelectedQuote(quote)}><Eye className="w-3.5 h-3.5" />Voir</DropdownMenuItem>
+                            <DropdownMenuItem className="text-xs" onClick={() => setSelectedQuote(quote)}><Eye className="w-3.5 h-3.5" />Voir détails</DropdownMenuItem>
+                            <DropdownMenuItem className="text-xs" onClick={() => window.open(`/devis/${quote.id}`, "_blank")}><Printer className="w-3.5 h-3.5" />Voir / Imprimer PDF</DropdownMenuItem>
+                            <DropdownMenuSeparator />
                             <DropdownMenuItem className="text-xs" onClick={() => handleStatus(quote.id, "envoyé")}><Send className="w-3.5 h-3.5" />Marquer envoyé</DropdownMenuItem>
                             <DropdownMenuItem className="text-xs" onClick={() => handleStatus(quote.id, "accepté")}><CheckCircle className="w-3.5 h-3.5" />Marquer accepté</DropdownMenuItem>
                             <DropdownMenuSeparator />

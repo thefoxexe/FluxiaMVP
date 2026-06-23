@@ -16,7 +16,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
-import { updateCompanyProfile, changePassword, generateApiKey, inviteTeamMember } from "@/actions/profile";
+import { updateCompanyProfile, updateLogoUrl, updateInvoiceTemplate, changePassword, generateApiKey, inviteTeamMember } from "@/actions/profile";
 import type { Profile } from "@/lib/supabase/types";
 
 const NAV = [
@@ -93,8 +93,11 @@ export default function ParametresPage() {
   const [companyForm, setCompanyForm] = useState({
     company_name: "", company_phone: "", company_address: "",
     company_city: "", company_zip: "", company_country: "CH",
-    company_vat: "", company_website: "",
+    company_vat: "", company_website: "", company_email: "",
+    company_iban: "", company_currency: "CHF",
   });
+  const [logoUploading, setLogoUploading] = useState(false);
+  const [invoiceTemplate, setInvoiceTemplate] = useState("moderne");
   const [passwordForm, setPasswordForm] = useState({ next: "", confirm: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [apiKey, setApiKey] = useState("");
@@ -123,9 +126,15 @@ export default function ParametresPage() {
           company_country: data.company_country ?? "CH",
           company_vat: data.company_vat ?? "",
           company_website: data.company_website ?? "",
+          company_email: (data as Record<string, unknown>).company_email as string ?? "",
+          company_iban: (data as Record<string, unknown>).company_iban as string ?? "",
+          company_currency: (data as Record<string, unknown>).company_currency as string ?? "CHF",
         });
-        if (data.stripe_customer_id?.startsWith("flx_live_")) {
-          setApiKey(data.stripe_customer_id);
+        if ((data as Record<string, unknown>).api_key) {
+          setApiKey((data as Record<string, unknown>).api_key as string);
+        }
+        if ((data as Record<string, unknown>).invoice_template) {
+          setInvoiceTemplate((data as Record<string, unknown>).invoice_template as string);
         }
       }
       const saved = localStorage.getItem("fluxia_notif_prefs");
@@ -195,6 +204,34 @@ export default function ParametresPage() {
 
   const copyApiKey = () => { navigator.clipboard.writeText(apiKey); show("Clé API copiée"); };
 
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) { alert("Fichier trop grand (max 2 Mo)"); return; }
+    setLogoUploading(true);
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { setLogoUploading(false); return; }
+    const ext = file.name.split(".").pop();
+    const path = `${user.id}/logo.${ext}`;
+    const { error } = await supabase.storage.from("logos").upload(path, file, { upsert: true, contentType: file.type });
+    if (!error) {
+      const { data: urlData } = supabase.storage.from("logos").getPublicUrl(path);
+      const url = `${urlData.publicUrl}?t=${Date.now()}`;
+      await updateLogoUrl(url);
+      setProfile(p => p ? { ...p, company_logo_url: url } : p);
+      show("Logo mis à jour");
+    } else { alert("Erreur upload: " + error.message); }
+    setLogoUploading(false);
+  };
+
+  const handleSaveTemplate = async (tpl: string) => {
+    setInvoiceTemplate(tpl);
+    await updateInvoiceTemplate(tpl);
+    localStorage.setItem("fluxia_invoice_template", tpl);
+    show("Modèle de document enregistré");
+  };
+
   const openStripePortal = async () => {
     const res = await fetch("/api/stripe/portal", { method: "POST" });
     const { url } = await res.json().catch(() => ({}));
@@ -202,13 +239,16 @@ export default function ParametresPage() {
   };
 
   const openStripeCheckout = async (plan: string) => {
-    const res = await fetch("/api/stripe/checkout", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ plan }),
-    });
-    const { url } = await res.json().catch(() => ({}));
-    if (url) window.location.href = url;
+    try {
+      const res = await fetch("/api/stripe/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plan }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (data.url) { window.location.href = data.url; }
+      else { alert(data.error ?? "Stripe n'est pas configuré. Ajoutez STRIPE_SECRET_KEY et STRIPE_PRICE_* dans les variables d'environnement Vercel."); }
+    } catch { alert("Erreur de connexion à Stripe."); }
   };
 
   const currentPlan = profile?.subscription_plan ?? "free";
@@ -288,6 +328,51 @@ export default function ParametresPage() {
             {activeSection === "company" && (
               <div className="space-y-5">
                 <div><h2 className="text-lg font-bold">Mon entreprise</h2><p className="text-sm text-muted-foreground mt-0.5">Ces informations apparaissent sur vos devis et factures.</p></div>
+
+                {/* Logo upload */}
+                <div className="p-4 rounded-xl border border-border bg-card">
+                  <Label className="text-xs font-medium mb-3 block">Logo de l'entreprise</Label>
+                  <div className="flex items-center gap-4">
+                    <div className="w-20 h-20 rounded-xl border-2 border-dashed border-border bg-secondary/20 flex items-center justify-center overflow-hidden shrink-0">
+                      {profile?.company_logo_url ? (
+                        <img src={profile.company_logo_url} alt="Logo" className="w-full h-full object-contain" />
+                      ) : (
+                        <Building2 className="w-7 h-7 text-muted-foreground/30" />
+                      )}
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground mb-2">PNG, JPG ou SVG · Max 2 Mo · Fond transparent recommandé</p>
+                      <label className="cursor-pointer">
+                        <input type="file" className="sr-only" accept="image/*" onChange={handleLogoUpload} disabled={logoUploading} />
+                        <span className={cn("inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-border text-xs font-medium transition-colors", logoUploading ? "opacity-50" : "hover:bg-secondary")}>
+                          <Upload className="w-3.5 h-3.5" />
+                          {logoUploading ? "Upload en cours..." : profile?.company_logo_url ? "Remplacer" : "Choisir un fichier"}
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Template selector */}
+                <div className="p-4 rounded-xl border border-border bg-card">
+                  <Label className="text-xs font-medium mb-3 block">Modèle de documents (devis & factures)</Label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {[
+                      { id: "moderne", label: "Moderne", desc: "En-tête vert, épuré" },
+                      { id: "classique", label: "Classique", desc: "Style formel suisse" },
+                      { id: "minimaliste", label: "Minimaliste", desc: "Ultra-simple" },
+                    ].map(tpl => (
+                      <button key={tpl.id} onClick={() => handleSaveTemplate(tpl.id)}
+                        className={cn("p-3 rounded-lg border text-left transition-all", invoiceTemplate === tpl.id ? "border-emerald-500/50 bg-emerald-500/5" : "border-border hover:border-emerald-500/20")}>
+                        <div className="text-xs font-semibold mb-0.5">{tpl.label}</div>
+                        <div className="text-[10px] text-muted-foreground">{tpl.desc}</div>
+                        {invoiceTemplate === tpl.id && <div className="text-[10px] text-emerald-400 mt-1 font-medium">✓ Actif</div>}
+                      </button>
+                    ))}
+                  </div>
+                  <p className="text-[11px] text-muted-foreground mt-2">Aperçu disponible dans chaque devis/facture → "Voir / Imprimer PDF"</p>
+                </div>
+
                 <div className="space-y-4">
                   <div>
                     <Label className="text-xs font-medium mb-1.5 block">Nom de l'entreprise</Label>
@@ -295,12 +380,27 @@ export default function ParametresPage() {
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
+                      <Label className="text-xs font-medium mb-1.5 block">Email entreprise</Label>
+                      <Input type="email" className="h-9 text-sm" placeholder="contact@entreprise.ch" value={companyForm.company_email} onChange={e => setCompanyForm(f => ({ ...f, company_email: e.target.value }))} />
+                    </div>
+                    <div>
                       <Label className="text-xs font-medium mb-1.5 block">Téléphone</Label>
                       <Input className="h-9 text-sm" placeholder="+41 79 000 00 00" value={companyForm.company_phone} onChange={e => setCompanyForm(f => ({ ...f, company_phone: e.target.value }))} />
                     </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
                     <div>
                       <Label className="text-xs font-medium mb-1.5 block">Site web</Label>
                       <Input className="h-9 text-sm" placeholder="https://..." value={companyForm.company_website} onChange={e => setCompanyForm(f => ({ ...f, company_website: e.target.value }))} />
+                    </div>
+                    <div>
+                      <Label className="text-xs font-medium mb-1.5 block">Devise</Label>
+                      <select className="w-full h-9 rounded-md border border-input bg-background px-3 text-sm" value={companyForm.company_currency} onChange={e => setCompanyForm(f => ({ ...f, company_currency: e.target.value }))}>
+                        <option value="CHF">CHF – Franc suisse</option>
+                        <option value="EUR">EUR – Euro</option>
+                        <option value="USD">USD – Dollar US</option>
+                        <option value="GBP">GBP – Livre sterling</option>
+                      </select>
                     </div>
                   </div>
                   <div>
@@ -324,9 +424,15 @@ export default function ParametresPage() {
                       </select>
                     </div>
                   </div>
-                  <div>
-                    <Label className="text-xs font-medium mb-1.5 block">Numéro TVA</Label>
-                    <Input className="h-9 text-sm" placeholder="CHE-123.456.789 TVA" value={companyForm.company_vat} onChange={e => setCompanyForm(f => ({ ...f, company_vat: e.target.value }))} />
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <Label className="text-xs font-medium mb-1.5 block">Numéro TVA</Label>
+                      <Input className="h-9 text-sm" placeholder="CHE-123.456.789 TVA" value={companyForm.company_vat} onChange={e => setCompanyForm(f => ({ ...f, company_vat: e.target.value }))} />
+                    </div>
+                    <div>
+                      <Label className="text-xs font-medium mb-1.5 block">IBAN</Label>
+                      <Input className="h-9 text-sm" placeholder="CH56 0483 5012 3456 7800 9" value={companyForm.company_iban} onChange={e => setCompanyForm(f => ({ ...f, company_iban: e.target.value }))} />
+                    </div>
                   </div>
                 </div>
                 <Button className="h-9 text-sm" onClick={saveCompany} disabled={saving || isPending}>{saving ? "Enregistrement..." : "Enregistrer"}</Button>
