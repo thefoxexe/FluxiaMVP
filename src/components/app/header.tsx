@@ -67,7 +67,7 @@ export function Header({ title, subtitle }: HeaderProps) {
             <Button variant="ghost" size="icon" className="h-8 w-8 relative">
               <Bell className="w-4 h-4" />
               {unreadCount > 0 && (
-                <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-blue-500 rounded-full" />
+                <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-emerald-500 rounded-full" />
               )}
             </Button>
           </DropdownMenuTrigger>
@@ -79,7 +79,7 @@ export function Header({ title, subtitle }: HeaderProps) {
             <DropdownMenuSeparator />
             {NOTIFICATIONS.map((n) => (
               <DropdownMenuItem key={n.id} className="flex items-start gap-2.5 py-2.5">
-                <div className={cn("w-1.5 h-1.5 rounded-full mt-1.5 shrink-0", n.unread ? "bg-blue-500" : "bg-transparent border border-border")} />
+                <div className={cn("w-1.5 h-1.5 rounded-full mt-1.5 shrink-0", n.unread ? "bg-emerald-500" : "bg-transparent border border-border")} />
                 <div className="flex-1 min-w-0">
                   <p className="text-xs leading-relaxed">{n.message}</p>
                   <p className="text-[10px] text-muted-foreground mt-0.5">Il y a {n.time}</p>
@@ -87,7 +87,7 @@ export function Header({ title, subtitle }: HeaderProps) {
               </DropdownMenuItem>
             ))}
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="justify-center text-xs text-blue-400">
+            <DropdownMenuItem className="justify-center text-xs text-emerald-400">
               Toutes les notifications
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -105,7 +105,7 @@ export function Header({ title, subtitle }: HeaderProps) {
             <DropdownMenuLabel className="text-xs">Créer</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem className="text-xs">
-              <Zap className="w-3.5 h-3.5 text-blue-400" />
+              <Zap className="w-3.5 h-3.5 text-emerald-400" />
               Devis avec IA
             </DropdownMenuItem>
             <DropdownMenuItem className="text-xs">Devis manuel</DropdownMenuItem>

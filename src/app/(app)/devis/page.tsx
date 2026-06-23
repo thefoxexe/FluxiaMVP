@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useTransition } from "react";
 import {
   Plus, Search, Eye, Send, Download, Trash2, FileText,
-  CheckCircle, XCircle, Clock, Zap, TrendingUp, Edit, X
+  CheckCircle, Clock, Zap, TrendingUp, X, Sparkles, Loader2
 } from "lucide-react";
 import { Header } from "@/components/app/header";
 import { Button } from "@/components/ui/button";
@@ -21,7 +21,7 @@ type QuoteWithItems = Quote & { quote_items: Array<{ id: string; description: st
 
 const STATUS_COLORS: Record<string, string> = {
   brouillon: "text-muted-foreground bg-secondary border-border",
-  envoyé: "text-blue-400 bg-blue-500/10 border-blue-500/20",
+  envoyé: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
   consulté: "text-yellow-400 bg-yellow-500/10 border-yellow-500/20",
   accepté: "text-green-400 bg-green-500/10 border-green-500/20",
   refusé: "text-red-400 bg-red-500/10 border-red-500/20",
@@ -51,6 +51,9 @@ export default function DevisPage() {
   const [creating, setCreating] = useState(false);
   const [form, setForm] = useState({ contact_id: "", title: "", valid_until: "", tax_rate: 8.1, notes: "" });
   const [items, setItems] = useState<LineItem[]>([{ ...EMPTY_ITEM }]);
+  const [showAI, setShowAI] = useState(false);
+  const [aiPrompt, setAiPrompt] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
@@ -98,6 +101,26 @@ export default function DevisPage() {
   const updateItem = (i: number, field: keyof LineItem, value: string | number) =>
     setItems(prev => prev.map((it, idx) => idx === i ? { ...it, [field]: value } : it));
 
+  const handleAIGenerate = async () => {
+    if (!aiPrompt.trim()) return;
+    setAiLoading(true);
+    const contact = contacts.find(c => c.id === form.contact_id);
+    const res = await fetch("/api/ai/quote", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ description: aiPrompt, contact_name: contact?.name }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.title) setForm(f => ({ ...f, title: data.title }));
+      if (data.items?.length) setItems(data.items.map((it: LineItem) => ({ description: it.description, quantity: it.quantity, unit_price: it.unit_price })));
+      if (data.notes) setForm(f => ({ ...f, notes: data.notes }));
+      setShowAI(false);
+      setShowCreate(true);
+    }
+    setAiLoading(false);
+  };
+
   const filtered = quotes.filter((q) => {
     const matchSearch = !search || q.number.toLowerCase().includes(search.toLowerCase()) || (q.title ?? "").toLowerCase().includes(search.toLowerCase());
     const matchStatus = statusFilter === "tous" || q.status === statusFilter;
@@ -127,7 +150,7 @@ export default function DevisPage() {
         {/* Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           {[
-            { label: "Total devis", value: quotes.length, icon: FileText, color: "text-blue-400", bg: "bg-blue-500/10" },
+            { label: "Total devis", value: quotes.length, icon: FileText, color: "text-emerald-400", bg: "bg-emerald-500/10" },
             { label: "Montant total", value: formatCurrency(quotes.reduce((s, q) => s + q.total, 0)), icon: TrendingUp, color: "text-green-400", bg: "bg-green-500/10" },
             { label: "En attente", value: pending.length, icon: Clock, color: "text-yellow-400", bg: "bg-yellow-500/10" },
             { label: "Taux d'acceptation", value: `${rate}%`, icon: CheckCircle, color: "text-cyan-400", bg: "bg-cyan-500/10" },
@@ -151,8 +174,8 @@ export default function DevisPage() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
               <Input placeholder="Rechercher un devis..." className="pl-9 h-9 text-sm" value={search} onChange={(e) => setSearch(e.target.value)} />
             </div>
-            <Button variant="outline" size="sm" className="gap-1.5 h-9 shrink-0">
-              <Zap className="w-3.5 h-3.5 text-blue-400" />
+            <Button variant="outline" size="sm" className="gap-1.5 h-9 shrink-0 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10" onClick={() => setShowAI(true)}>
+              <Sparkles className="w-3.5 h-3.5" />
               <span className="hidden sm:inline text-xs">Devis IA</span>
             </Button>
             <Button size="sm" className="gap-1.5 h-9 shrink-0" onClick={() => setShowCreate(true)}>
@@ -162,7 +185,7 @@ export default function DevisPage() {
           </div>
           <div className="flex gap-1 overflow-x-auto pb-1">
             {["tous", "brouillon", "envoyé", "consulté", "accepté", "refusé", "expiré"].map((s) => (
-              <button key={s} onClick={() => setStatusFilter(s)} className={cn("px-3 py-1.5 rounded-md text-xs font-medium transition-colors capitalize whitespace-nowrap shrink-0", statusFilter === s ? "bg-blue-600/15 text-blue-400 border border-blue-600/20" : "bg-secondary text-muted-foreground hover:text-foreground")}>
+              <button key={s} onClick={() => setStatusFilter(s)} className={cn("px-3 py-1.5 rounded-md text-xs font-medium transition-colors capitalize whitespace-nowrap shrink-0", statusFilter === s ? "bg-emerald-600/15 text-emerald-400 border border-emerald-600/20" : "bg-secondary text-muted-foreground hover:text-foreground")}>
                 {s === "tous" ? "Tous" : s}
               </button>
             ))}
@@ -195,7 +218,7 @@ export default function DevisPage() {
                 <tbody className="divide-y divide-border">
                   {filtered.map((quote) => (
                     <tr key={quote.id} className="hover:bg-secondary/20 transition-colors cursor-pointer group" onClick={() => setSelectedQuote(quote)}>
-                      <td className="py-3 px-4 text-sm font-medium text-blue-400">{quote.number}</td>
+                      <td className="py-3 px-4 text-sm font-medium text-emerald-400">{quote.number}</td>
                       <td className="py-3 px-4 text-sm text-muted-foreground">{quote.title ?? "—"}</td>
                       <td className="py-3 px-4">
                         <span className={cn("text-[11px] border rounded-full px-2 py-0.5 font-medium", STATUS_COLORS[quote.status])}>
@@ -240,6 +263,49 @@ export default function DevisPage() {
           </div>
         )}
       </div>
+
+      {/* AI Quote Modal */}
+      {showAI && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setShowAI(false)}>
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+          <div className="relative bg-card border border-border rounded-xl w-full max-w-lg shadow-2xl" onClick={e => e.stopPropagation()}>
+            <div className="p-5 border-b border-border flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+                  <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+                </div>
+                <h2 className="font-semibold">Générer un devis avec l'IA</h2>
+              </div>
+              <button onClick={() => setShowAI(false)} className="text-muted-foreground hover:text-foreground p-1"><X className="w-4 h-4" /></button>
+            </div>
+            <div className="p-5 space-y-4">
+              <div>
+                <label className="text-xs font-medium block mb-1.5">Client (optionnel)</label>
+                <select className="w-full h-9 rounded-md border border-input bg-background px-3 text-sm" value={form.contact_id} onChange={e => setForm(f => ({ ...f, contact_id: e.target.value }))}>
+                  <option value="">— Sélectionner un client —</option>
+                  {contacts.map(c => <option key={c.id} value={c.id}>{c.name}{c.company ? ` (${c.company})` : ""}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="text-xs font-medium block mb-1.5">Décris le travail à réaliser *</label>
+                <textarea
+                  className="w-full h-32 rounded-md border border-input bg-background px-3 py-2 text-sm resize-none focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-emerald-500"
+                  placeholder="ex: Refonte complète du site web de l'entreprise, avec une page d'accueil, une page services, un formulaire de contact et l'optimisation SEO..."
+                  value={aiPrompt}
+                  onChange={e => setAiPrompt(e.target.value)}
+                />
+              </div>
+              <p className="text-xs text-muted-foreground">L'IA va analyser ta description et générer automatiquement les lignes de prestation avec des prix réalistes.</p>
+              <div className="flex gap-2 pt-1 border-t border-border">
+                <Button className="flex-1 h-9 text-sm gap-2" onClick={handleAIGenerate} disabled={aiLoading || !aiPrompt.trim()}>
+                  {aiLoading ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Génération en cours...</> : <><Sparkles className="w-3.5 h-3.5" /> Générer le devis</>}
+                </Button>
+                <Button variant="outline" className="h-9 text-sm" onClick={() => setShowAI(false)}>Annuler</Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Create Quote Modal */}
       {showCreate && (
@@ -303,7 +369,7 @@ export default function DevisPage() {
                     <tfoot className="bg-secondary/20 text-xs">
                       <tr><td colSpan={3} className="py-2 px-3 text-muted-foreground">Sous-total</td><td className="py-2 px-3 text-right">{formatCurrency(subtotal)}</td><td /></tr>
                       <tr><td colSpan={3} className="py-2 px-3 text-muted-foreground">TVA {form.tax_rate}%</td><td className="py-2 px-3 text-right">{formatCurrency(taxAmount)}</td><td /></tr>
-                      <tr><td colSpan={3} className="py-2.5 px-3 font-bold text-sm">Total TTC</td><td className="py-2.5 px-3 text-right font-bold text-blue-400 text-sm">{formatCurrency(total)}</td><td /></tr>
+                      <tr><td colSpan={3} className="py-2.5 px-3 font-bold text-sm">Total TTC</td><td className="py-2.5 px-3 text-right font-bold text-emerald-400 text-sm">{formatCurrency(total)}</td><td /></tr>
                     </tfoot>
                   </table>
                 </div>
@@ -372,7 +438,7 @@ export default function DevisPage() {
                       <tfoot className="bg-secondary/20">
                         <tr><td colSpan={3} className="py-2 px-3 text-xs text-muted-foreground">Sous-total</td><td className="py-2 px-3 text-right text-sm">{formatCurrency(selectedQuote.subtotal)}</td></tr>
                         <tr><td colSpan={3} className="py-2 px-3 text-xs text-muted-foreground">TVA {selectedQuote.tax_rate}%</td><td className="py-2 px-3 text-right text-sm">{formatCurrency(selectedQuote.tax_amount)}</td></tr>
-                        <tr><td colSpan={3} className="py-2.5 px-3 text-sm font-bold">Total TTC</td><td className="py-2.5 px-3 text-right text-base font-bold text-blue-400">{formatCurrency(selectedQuote.total)}</td></tr>
+                        <tr><td colSpan={3} className="py-2.5 px-3 text-sm font-bold">Total TTC</td><td className="py-2.5 px-3 text-right text-base font-bold text-emerald-400">{formatCurrency(selectedQuote.total)}</td></tr>
                       </tfoot>
                     </table>
                   </div>

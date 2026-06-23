@@ -134,7 +134,7 @@ export default function LandingPage() {
       )}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 shrink-0">
-            <div className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg bg-emerald-600 flex items-center justify-center">
               <Zap className="w-3.5 h-3.5 text-white" />
             </div>
             <span className="font-semibold text-sm">Fluxia</span>
@@ -191,7 +191,7 @@ export default function LandingPage() {
 
       {/* ── HERO ── */}
       <section className="pt-28 pb-20 px-4 sm:px-6 text-center max-w-4xl mx-auto">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-blue-500/30 bg-blue-500/10 text-blue-400 text-xs font-medium mb-6">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-xs font-medium mb-6">
           <Sparkles className="w-3 h-3" />
           Nouveau — Inbox IA disponible
         </div>
@@ -259,11 +259,11 @@ export default function LandingPage() {
               {["Dashboard", "Inbox IA", "CRM", "Devis", "Factures", "Tâches"].map((item, i) => (
                 <div key={item} className={cn(
                   "flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs",
-                  i === 0 ? "bg-blue-600/10 text-blue-400" : "text-muted-foreground"
+                  i === 0 ? "bg-emerald-600/10 text-emerald-400" : "text-muted-foreground"
                 )}>
-                  <div className={cn("w-3.5 h-3.5 rounded-sm", i === 0 ? "bg-blue-600/30" : "bg-secondary")} />
+                  <div className={cn("w-3.5 h-3.5 rounded-sm", i === 0 ? "bg-emerald-600/30" : "bg-secondary")} />
                   {item}
-                  {i === 1 && <span className="ml-auto text-[9px] bg-blue-600 text-white px-1 rounded">4</span>}
+                  {i === 1 && <span className="ml-auto text-[9px] bg-emerald-600 text-white px-1 rounded">4</span>}
                 </div>
               ))}
             </div>
@@ -275,8 +275,8 @@ export default function LandingPage() {
                 {[
                   { label: "CA du mois", value: "CHF 47'850", color: "text-emerald-400" },
                   { label: "Impayées", value: "CHF 34'734", color: "text-amber-400" },
-                  { label: "Conversion", value: "68.5%", color: "text-blue-400" },
-                  { label: "Cash", value: "CHF 89'200", color: "text-blue-400" },
+                  { label: "Conversion", value: "68.5%", color: "text-emerald-400" },
+                  { label: "Cash", value: "CHF 89'200", color: "text-emerald-400" },
                 ].map((s) => (
                   <div key={s.label} className="bg-secondary/50 border border-border rounded-lg p-2.5">
                     <div className={cn("text-sm font-semibold", s.color)}>{s.value}</div>
@@ -298,7 +298,7 @@ export default function LandingPage() {
       {/* ── FEATURES ── */}
       <section id="fonctionnalités" className="px-4 sm:px-6 py-20 max-w-6xl mx-auto">
         <div className="text-center mb-12">
-          <div className="text-xs font-medium text-blue-400 mb-3 uppercase tracking-wider">Fonctionnalités</div>
+          <div className="text-xs font-medium text-emerald-400 mb-3 uppercase tracking-wider">Fonctionnalités</div>
           <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-balance">Tout ce dont vous avez besoin, rien de superflu</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto text-sm sm:text-base">
             Fluxia remplace 4 à 6 outils distincts par une plateforme unifiée, intelligente et pensée pour les PME suisses.
@@ -308,8 +308,8 @@ export default function LandingPage() {
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {FEATURES.map((f) => (
             <div key={f.title} className="p-4 rounded-lg border border-border bg-card hover:border-white/10 transition-colors">
-              <div className="w-8 h-8 rounded-md bg-blue-600/15 border border-blue-600/20 flex items-center justify-center mb-3">
-                <f.icon className="w-4 h-4 text-blue-400" />
+              <div className="w-8 h-8 rounded-md bg-emerald-600/15 border border-emerald-600/20 flex items-center justify-center mb-3">
+                <f.icon className="w-4 h-4 text-emerald-400" />
               </div>
               <h3 className="text-sm font-semibold mb-1.5">{f.title}</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">{f.description}</p>
@@ -322,7 +322,7 @@ export default function LandingPage() {
       <section className="px-4 sm:px-6 py-20 border-y border-border bg-card">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
-            <div className="text-xs font-medium text-blue-400 mb-3 uppercase tracking-wider">Comment ça marche</div>
+            <div className="text-xs font-medium text-emerald-400 mb-3 uppercase tracking-wider">Comment ça marche</div>
             <h2 className="text-3xl sm:text-4xl font-bold mb-4">Opérationnel en 5 minutes</h2>
           </div>
 
@@ -345,7 +345,7 @@ export default function LandingPage() {
       {/* ── COMPARISON ── */}
       <section id="comparaison" className="px-4 sm:px-6 py-20 max-w-4xl mx-auto">
         <div className="text-center mb-12">
-          <div className="text-xs font-medium text-blue-400 mb-3 uppercase tracking-wider">Comparaison</div>
+          <div className="text-xs font-medium text-emerald-400 mb-3 uppercase tracking-wider">Comparaison</div>
           <h2 className="text-3xl sm:text-4xl font-bold mb-4">Pourquoi choisir Fluxia ?</h2>
         </div>
 
@@ -353,7 +353,7 @@ export default function LandingPage() {
           {/* Header */}
           <div className="grid grid-cols-4 bg-secondary/40 border-b border-border">
             <div className="p-3 text-xs font-medium text-muted-foreground">Fonctionnalité</div>
-            <div className="p-3 text-xs font-semibold text-center text-blue-400">Fluxia</div>
+            <div className="p-3 text-xs font-semibold text-center text-emerald-400">Fluxia</div>
             <div className="p-3 text-xs font-medium text-center text-muted-foreground">Bexio</div>
             <div className="p-3 text-xs font-medium text-center text-muted-foreground">HubSpot</div>
           </div>
@@ -361,7 +361,7 @@ export default function LandingPage() {
             <div key={row.feature} className={cn("grid grid-cols-4 border-b border-border last:border-0", i % 2 === 0 ? "" : "bg-secondary/20")}>
               <div className="p-3 text-xs flex items-center gap-2">
                 {row.feature}
-                {row.note && <span className="text-[10px] text-blue-400 hidden sm:inline">— {row.note}</span>}
+                {row.note && <span className="text-[10px] text-emerald-400 hidden sm:inline">— {row.note}</span>}
               </div>
               <div className="p-3 flex justify-center items-center">
                 {row.fluxia ? <CheckIcon /> : <CrossIcon />}
@@ -381,7 +381,7 @@ export default function LandingPage() {
       <section className="px-4 sm:px-6 py-20 border-t border-border">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
-            <div className="text-xs font-medium text-blue-400 mb-3 uppercase tracking-wider">Témoignages</div>
+            <div className="text-xs font-medium text-emerald-400 mb-3 uppercase tracking-wider">Témoignages</div>
             <h2 className="text-3xl sm:text-4xl font-bold mb-4">Ils utilisent Fluxia chaque jour</h2>
           </div>
           <div className="grid sm:grid-cols-3 gap-4">
@@ -426,7 +426,7 @@ export default function LandingPage() {
       <section id="tarifs" className="px-4 sm:px-6 py-20 border-t border-border">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
-            <div className="text-xs font-medium text-blue-400 mb-3 uppercase tracking-wider">Tarifs</div>
+            <div className="text-xs font-medium text-emerald-400 mb-3 uppercase tracking-wider">Tarifs</div>
             <h2 className="text-3xl sm:text-4xl font-bold mb-4">Simple, transparent, sans surprises</h2>
             <p className="text-sm text-muted-foreground">14 jours d'essai gratuit · Sans carte bancaire · Annulable à tout moment</p>
           </div>
@@ -436,11 +436,11 @@ export default function LandingPage() {
               <div key={plan.name} className={cn(
                 "p-6 rounded-lg border flex flex-col",
                 plan.highlighted
-                  ? "border-blue-500/50 bg-blue-600/5"
+                  ? "border-emerald-500/50 bg-emerald-600/5"
                   : "border-border bg-card"
               )}>
                 {plan.highlighted && (
-                  <div className="text-[10px] font-semibold text-blue-400 uppercase tracking-wider mb-3">Le plus populaire</div>
+                  <div className="text-[10px] font-semibold text-emerald-400 uppercase tracking-wider mb-3">Le plus populaire</div>
                 )}
                 <div className="mb-4">
                   <div className="text-base font-semibold mb-1">{plan.name}</div>
@@ -485,7 +485,7 @@ export default function LandingPage() {
       <section id="faq" className="px-4 sm:px-6 py-20 border-t border-border">
         <div className="max-w-2xl mx-auto">
           <div className="text-center mb-12">
-            <div className="text-xs font-medium text-blue-400 mb-3 uppercase tracking-wider">FAQ</div>
+            <div className="text-xs font-medium text-emerald-400 mb-3 uppercase tracking-wider">FAQ</div>
             <h2 className="text-3xl sm:text-4xl font-bold mb-4">Questions fréquentes</h2>
           </div>
 
@@ -513,8 +513,8 @@ export default function LandingPage() {
       {/* ── CTA ── */}
       <section className="px-4 sm:px-6 py-20 border-t border-border">
         <div className="max-w-2xl mx-auto text-center">
-          <div className="w-12 h-12 rounded-xl bg-blue-600/20 border border-blue-600/30 flex items-center justify-center mx-auto mb-6">
-            <Zap className="w-6 h-6 text-blue-400" />
+          <div className="w-12 h-12 rounded-xl bg-emerald-600/20 border border-emerald-600/30 flex items-center justify-center mx-auto mb-6">
+            <Zap className="w-6 h-6 text-emerald-400" />
           </div>
           <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-balance">
             Prêt à automatiser votre business ?
@@ -546,7 +546,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 rounded-md bg-blue-600 flex items-center justify-center">
+              <div className="w-6 h-6 rounded-md bg-emerald-600 flex items-center justify-center">
                 <Zap className="w-3 h-3 text-white" />
               </div>
               <span className="text-sm font-medium">Fluxia</span>

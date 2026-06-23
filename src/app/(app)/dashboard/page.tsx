@@ -48,8 +48,8 @@ const RevenueTooltip = ({ active, payload, label }: any) => {
 };
 
 const STAGE_COLORS: Record<string, string> = {
-  prospect: "#60a5fa",
-  "contacté": "#93c5fd",
+  prospect: "#34d399",
+  "contacté": "#6ee7b7",
   "devis envoyé": "#f59e0b",
   "négociation": "#fb923c",
   gagné: "#34d399",
@@ -137,11 +137,11 @@ export default function DashboardPage() {
 
   const STATS = [
     { title: "CA du mois", value: formatCurrency(monthRevenue), icon: TrendingUp, color: "text-green-400", bg: "bg-green-500/10", sub: "factures payées ce mois" },
-    { title: "CA annuel", value: formatCurrency(yearRevenue), icon: Target, color: "text-blue-400", bg: "bg-blue-500/10", sub: "cumulé depuis janvier" },
+    { title: "CA annuel", value: formatCurrency(yearRevenue), icon: Target, color: "text-emerald-400", bg: "bg-emerald-500/10", sub: "cumulé depuis janvier" },
     { title: "Impayées", value: formatCurrency(unpaidTotal), badge: `${unpaidInvoices.length}`, icon: CreditCard, color: "text-yellow-400", bg: "bg-yellow-500/10", sub: overdueCount > 0 ? `dont ${overdueCount} en retard` : "en cours" },
     { title: "Devis en cours", value: formatCurrency(pendingTotal), badge: `${pendingQuotes.length}`, icon: FileText, color: "text-cyan-400", bg: "bg-cyan-500/10", sub: "en attente de réponse" },
     { title: "Conversion", value: `${conversionRate}%`, icon: TrendingUp, color: "text-green-400", bg: "bg-green-500/10", sub: "devis → acceptés" },
-    { title: "Contacts", value: String(contacts.length), icon: Users, color: "text-blue-400", bg: "bg-blue-500/10", sub: `dont ${contacts.filter(c => c.status === "gagné").length} clients` },
+    { title: "Contacts", value: String(contacts.length), icon: Users, color: "text-emerald-400", bg: "bg-emerald-500/10", sub: `dont ${contacts.filter(c => c.status === "gagné").length} clients` },
   ];
 
   return (
@@ -153,8 +153,8 @@ export default function DashboardPage() {
 
       <div className="p-4 lg:p-6 space-y-4 lg:space-y-6">
         {/* AI Summary */}
-        <div className="p-3 lg:p-4 rounded-xl border border-blue-500/20 bg-gradient-to-r from-blue-500/5 to-blue-500/5 flex items-start gap-3 lg:gap-4">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shrink-0">
+        <div className="p-3 lg:p-4 rounded-xl border border-emerald-500/20 bg-gradient-to-r from-emerald-500/5 to-emerald-500/5 flex items-start gap-3 lg:gap-4">
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shrink-0">
             <Zap className="w-4 h-4 text-white" />
           </div>
           <div className="flex-1 min-w-0">
@@ -198,7 +198,7 @@ export default function DashboardPage() {
               <div className="flex items-center justify-between">
                 <CardTitle className="text-sm font-semibold">Revenus (6 derniers mois)</CardTitle>
                 <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                  <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-blue-500 inline-block" />Revenus</span>
+                  <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" />Revenus</span>
                   <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-cyan-500 inline-block" />Cashflow</span>
                 </div>
               </div>
@@ -208,8 +208,8 @@ export default function DashboardPage() {
                 <AreaChart data={chartData} margin={{ top: 5, right: 5, bottom: 0, left: 0 }}>
                   <defs>
                     <linearGradient id="revGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.2} />
-                      <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.2} />
+                      <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
                     </linearGradient>
                     <linearGradient id="cashGrad" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="#06b6d4" stopOpacity={0.15} />
@@ -220,7 +220,7 @@ export default function DashboardPage() {
                   <XAxis dataKey="month" tick={{ fontSize: 11, fill: "#64748b" }} axisLine={false} tickLine={false} />
                   <YAxis tick={{ fontSize: 11, fill: "#64748b" }} axisLine={false} tickLine={false} tickFormatter={(v) => `${v / 1000}k`} />
                   <Tooltip content={<RevenueTooltip />} />
-                  <Area type="monotone" dataKey="revenue" name="Revenus" stroke="#3b82f6" strokeWidth={2} fill="url(#revGrad)" dot={false} />
+                  <Area type="monotone" dataKey="revenue" name="Revenus" stroke="#10b981" strokeWidth={2} fill="url(#revGrad)" dot={false} />
                   <Area type="monotone" dataKey="cashflow" name="Cashflow" stroke="#06b6d4" strokeWidth={2} fill="url(#cashGrad)" dot={false} />
                 </AreaChart>
               </ResponsiveContainer>
@@ -267,7 +267,7 @@ export default function DashboardPage() {
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-sm font-semibold">Factures récentes</CardTitle>
-                <Button variant="ghost" size="sm" className="text-xs h-7 px-2 text-blue-400">
+                <Button variant="ghost" size="sm" className="text-xs h-7 px-2 text-emerald-400">
                   Tout voir <ChevronRight className="w-3 h-3" />
                 </Button>
               </div>
@@ -313,7 +313,7 @@ export default function DashboardPage() {
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-sm font-semibold">Tâches urgentes</CardTitle>
-                <Button variant="ghost" size="sm" className="text-xs h-7 px-2 text-blue-400">
+                <Button variant="ghost" size="sm" className="text-xs h-7 px-2 text-emerald-400">
                   Tout voir <ChevronRight className="w-3 h-3" />
                 </Button>
               </div>

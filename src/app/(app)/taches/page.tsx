@@ -80,7 +80,7 @@ export default function TachesPage() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           {[
             { label: "À faire", value: byStatus("todo").length, color: "text-foreground", bg: "bg-secondary" },
-            { label: "En cours", value: byStatus("en_cours").length, color: "text-blue-400", bg: "bg-blue-500/10" },
+            { label: "En cours", value: byStatus("en_cours").length, color: "text-emerald-400", bg: "bg-emerald-500/10" },
             { label: "Urgent", value: urgentCount, color: "text-red-400", bg: "bg-red-500/10" },
             { label: "Terminées", value: byStatus("terminée").length, color: "text-green-400", bg: "bg-green-500/10" },
           ].map((stat) => (
@@ -107,7 +107,7 @@ export default function TachesPage() {
 
         {/* New Task Form */}
         {showForm && (
-          <div className="p-4 rounded-lg border border-blue-600/30 bg-blue-600/5 space-y-3">
+          <div className="p-4 rounded-lg border border-emerald-600/30 bg-emerald-600/5 space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">Nouvelle tâche</span>
               <button onClick={() => setShowForm(false)} className="text-muted-foreground hover:text-foreground"><X className="w-4 h-4" /></button>
@@ -150,7 +150,7 @@ export default function TachesPage() {
                     {pts.map((task) => (
                       <div key={task.id} className="flex items-start gap-3 p-3.5 rounded-lg border border-border bg-card hover:border-white/10 transition-all group">
                         <button onClick={() => toggleTask(task)} className="mt-0.5 shrink-0">
-                          <div className="w-4.5 h-4.5 rounded-full border border-border hover:border-blue-500/50 transition-colors flex items-center justify-center">
+                          <div className="w-4.5 h-4.5 rounded-full border border-border hover:border-emerald-500/50 transition-colors flex items-center justify-center">
                             <div className="w-4 h-4 rounded-full border border-border" />
                           </div>
                         </button>
@@ -240,7 +240,7 @@ export default function TachesPage() {
                         </div>
                       </div>
                     ))}
-                    <button className="w-full py-2 rounded-lg border border-dashed border-border text-[11px] text-muted-foreground hover:border-blue-500/30 hover:text-foreground transition-colors" onClick={() => setShowForm(true)}>
+                    <button className="w-full py-2 rounded-lg border border-dashed border-border text-[11px] text-muted-foreground hover:border-emerald-500/30 hover:text-foreground transition-colors" onClick={() => setShowForm(true)}>
                       + Ajouter
                     </button>
                   </div>

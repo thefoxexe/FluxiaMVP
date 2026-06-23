@@ -10,7 +10,7 @@
     --card-foreground: 0 0% 97%;
     --popover: 0 0% 7%;
     --popover-foreground: 0 0% 97%;
-    --primary: 217 91% 60%;
+    --primary: 158 64% 45%;
     --primary-foreground: 0 0% 100%;
     --secondary: 0 0% 11%;
     --secondary-foreground: 0 0% 90%;
@@ -22,7 +22,7 @@
     --destructive-foreground: 0 0% 100%;
     --border: 0 0% 14%;
     --input: 0 0% 11%;
-    --ring: 217 91% 60%;
+    --ring: 158 64% 45%;
     --radius: 0.5rem;
   }
 }
@@ -45,13 +45,13 @@
 @layer utilities {
   .text-balance { text-wrap: balance; }
   .text-gradient {
-    @apply bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-emerald-400 to-emerald-600 bg-clip-text text-transparent;
   }
   .card-hover {
     @apply transition-colors duration-150 hover:border-white/10;
   }
   .focus-ring {
-    @apply outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1 focus-visible:ring-offset-background;
+    @apply outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-1 focus-visible:ring-offset-background;
   }
 }
 

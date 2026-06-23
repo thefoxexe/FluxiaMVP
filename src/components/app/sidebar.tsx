@@ -83,23 +83,23 @@ export function Sidebar() {
               className={cn(
                 "flex items-center gap-2.5 px-2.5 py-2 rounded-md text-sm transition-colors relative",
                 isActive
-                  ? "bg-blue-600/10 text-blue-300"
+                  ? "bg-emerald-600/10 text-emerald-300"
                   : "text-muted-foreground hover:bg-secondary hover:text-foreground"
               )}
             >
-              <item.icon className={cn("shrink-0 w-4 h-4", isActive ? "text-blue-400" : "")} />
+              <item.icon className={cn("shrink-0 w-4 h-4", isActive ? "text-emerald-400" : "")} />
               {!collapsed && (
                 <>
                   <span className="flex-1">{item.label}</span>
                   {item.badge && (
-                    <span className="min-w-[18px] h-4 rounded bg-blue-600 text-white text-[10px] font-medium flex items-center justify-center px-1">
+                    <span className="min-w-[18px] h-4 rounded bg-emerald-600 text-white text-[10px] font-medium flex items-center justify-center px-1">
                       {item.badge}
                     </span>
                   )}
                 </>
               )}
               {collapsed && item.badge && (
-                <span className="absolute top-0.5 right-0.5 w-3.5 h-3.5 rounded-full bg-blue-600 text-white text-[8px] font-medium flex items-center justify-center">
+                <span className="absolute top-0.5 right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-600 text-white text-[8px] font-medium flex items-center justify-center">
                   {item.badge}
                 </span>
               )}
@@ -117,7 +117,7 @@ export function Sidebar() {
           className={cn(
             "flex items-center gap-2.5 px-2.5 py-2 rounded-md text-sm transition-colors w-full",
             pathname === "/assistant"
-              ? "bg-blue-600/10 text-blue-300"
+              ? "bg-emerald-600/10 text-emerald-300"
               : "text-muted-foreground hover:bg-secondary hover:text-foreground"
           )}
         >
@@ -135,7 +135,7 @@ export function Sidebar() {
           className={cn(
             "flex items-center gap-2.5 px-2.5 py-2 rounded-md text-sm transition-colors",
             pathname === "/parametres"
-              ? "bg-blue-600/10 text-blue-300"
+              ? "bg-emerald-600/10 text-emerald-300"
               : "text-muted-foreground hover:bg-secondary hover:text-foreground"
           )}
         >

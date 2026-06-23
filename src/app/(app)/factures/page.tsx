@@ -21,7 +21,7 @@ type InvoiceWithItems = Invoice & { invoice_items: Array<{ id: string; descripti
 
 const STATUS_COLORS: Record<string, string> = {
   brouillon: "text-muted-foreground bg-secondary border-border",
-  envoyé: "text-blue-400 bg-blue-500/10 border-blue-500/20",
+  envoyé: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
   payée: "text-green-400 bg-green-500/10 border-green-500/20",
   "en attente": "text-yellow-400 bg-yellow-500/10 border-yellow-500/20",
   en_retard: "text-red-400 bg-red-500/10 border-red-500/20",
@@ -138,7 +138,7 @@ export default function FacturesPage() {
         {/* Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           {[
-            { label: "Total factures", value: invoices.length, icon: FileText, color: "text-blue-400", bg: "bg-blue-500/10" },
+            { label: "Total factures", value: invoices.length, icon: FileText, color: "text-emerald-400", bg: "bg-emerald-500/10" },
             { label: "Encaissé", value: formatCurrency(totalPaid), icon: CheckCircle, color: "text-green-400", bg: "bg-green-500/10" },
             { label: "En attente", value: formatCurrency(totalPending), icon: Clock, color: "text-yellow-400", bg: "bg-yellow-500/10" },
             { label: "En retard", value: formatCurrency(totalOverdue), icon: AlertTriangle, color: "text-red-400", bg: "bg-red-500/10" },
@@ -169,7 +169,7 @@ export default function FacturesPage() {
           </div>
           <div className="flex gap-1 overflow-x-auto pb-1">
             {["tous", "brouillon", "envoyé", "payée", "en attente", "en_retard", "annulée"].map((s) => (
-              <button key={s} onClick={() => setStatusFilter(s)} className={cn("px-3 py-1.5 rounded-md text-xs font-medium transition-colors capitalize whitespace-nowrap shrink-0", statusFilter === s ? "bg-blue-600/15 text-blue-400 border border-blue-600/20" : "bg-secondary text-muted-foreground hover:text-foreground")}>
+              <button key={s} onClick={() => setStatusFilter(s)} className={cn("px-3 py-1.5 rounded-md text-xs font-medium transition-colors capitalize whitespace-nowrap shrink-0", statusFilter === s ? "bg-emerald-600/15 text-emerald-400 border border-emerald-600/20" : "bg-secondary text-muted-foreground hover:text-foreground")}>
                 {s === "tous" ? "Toutes" : s}
               </button>
             ))}
@@ -201,7 +201,7 @@ export default function FacturesPage() {
                 <tbody className="divide-y divide-border">
                   {filtered.map((inv) => (
                     <tr key={inv.id} className="hover:bg-secondary/20 transition-colors cursor-pointer group" onClick={() => setSelectedInvoice(inv)}>
-                      <td className="py-3 px-4 text-sm font-medium text-blue-400">{inv.number}</td>
+                      <td className="py-3 px-4 text-sm font-medium text-emerald-400">{inv.number}</td>
                       <td className="py-3 px-4">
                         <span className={cn("text-[11px] border rounded-full px-2 py-0.5 font-medium", STATUS_COLORS[inv.status])}>
                           {inv.status}
@@ -308,7 +308,7 @@ export default function FacturesPage() {
                     <tfoot className="bg-secondary/20 text-xs">
                       <tr><td colSpan={3} className="py-2 px-3 text-muted-foreground">Sous-total</td><td className="py-2 px-3 text-right">{formatCurrency(subtotal)}</td><td /></tr>
                       <tr><td colSpan={3} className="py-2 px-3 text-muted-foreground">TVA {form.tax_rate}%</td><td className="py-2 px-3 text-right">{formatCurrency(taxAmount)}</td><td /></tr>
-                      <tr><td colSpan={3} className="py-2.5 px-3 font-bold text-sm">Total TTC</td><td className="py-2.5 px-3 text-right font-bold text-blue-400 text-sm">{formatCurrency(total)}</td><td /></tr>
+                      <tr><td colSpan={3} className="py-2.5 px-3 font-bold text-sm">Total TTC</td><td className="py-2.5 px-3 text-right font-bold text-emerald-400 text-sm">{formatCurrency(total)}</td><td /></tr>
                     </tfoot>
                   </table>
                 </div>
@@ -371,7 +371,7 @@ export default function FacturesPage() {
                     <tfoot className="bg-secondary/20">
                       <tr><td colSpan={3} className="py-2 px-3 text-xs text-muted-foreground">Sous-total</td><td className="py-2 px-3 text-right text-sm">{formatCurrency(selectedInvoice.subtotal)}</td></tr>
                       <tr><td colSpan={3} className="py-2 px-3 text-xs text-muted-foreground">TVA {selectedInvoice.tax_rate}%</td><td className="py-2 px-3 text-right text-sm">{formatCurrency(selectedInvoice.tax_amount)}</td></tr>
-                      <tr><td colSpan={3} className="py-2.5 px-3 text-sm font-bold">Total TTC</td><td className="py-2.5 px-3 text-right text-base font-bold text-blue-400">{formatCurrency(selectedInvoice.total)}</td></tr>
+                      <tr><td colSpan={3} className="py-2.5 px-3 text-sm font-bold">Total TTC</td><td className="py-2.5 px-3 text-right text-base font-bold text-emerald-400">{formatCurrency(selectedInvoice.total)}</td></tr>
                     </tfoot>
                   </table>
                 </div>

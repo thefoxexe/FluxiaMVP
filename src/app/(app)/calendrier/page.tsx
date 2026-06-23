@@ -23,14 +23,14 @@ function getFirstDayOfMonth(year: number, month: number) {
 }
 
 const EVENT_TYPE_CONFIG: Record<string, { icon: React.ReactNode; defaultColor: string }> = {
-  meeting: { icon: <Video className="w-3.5 h-3.5" />, defaultColor: "text-blue-400 bg-blue-500/10 border-blue-500/20" },
+  meeting: { icon: <Video className="w-3.5 h-3.5" />, defaultColor: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20" },
   call: { icon: <Phone className="w-3.5 h-3.5" />, defaultColor: "text-green-400 bg-green-500/10 border-green-500/20" },
   deadline: { icon: <AlertCircle className="w-3.5 h-3.5" />, defaultColor: "text-red-400 bg-red-500/10 border-red-500/20" },
   reminder: { icon: <Clock className="w-3.5 h-3.5" />, defaultColor: "text-yellow-400 bg-yellow-500/10 border-yellow-500/20" },
 };
 
 const EVENT_COLORS: Record<string, string> = {
-  meeting: "text-blue-400 bg-blue-500/10 border-blue-500/20",
+  meeting: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
   call: "text-green-400 bg-green-500/10 border-green-500/20",
   deadline: "text-red-400 bg-red-500/10 border-red-500/20",
   reminder: "text-yellow-400 bg-yellow-500/10 border-yellow-500/20",
@@ -141,7 +141,7 @@ export default function CalendrierPage() {
                 variant="ghost"
                 size="sm"
                 onClick={() => { setCurrentMonth(today.getMonth()); setCurrentYear(today.getFullYear()); setSelectedDay(today.getDate()); }}
-                className="text-xs text-blue-400"
+                className="text-xs text-emerald-400"
               >
                 Auj.
               </Button>
@@ -177,13 +177,13 @@ export default function CalendrierPage() {
                     onClick={() => setSelectedDay(day)}
                     className={cn(
                       "h-24 lg:h-28 border-b border-r border-border p-1.5 cursor-pointer transition-colors overflow-hidden",
-                      isSelected ? "bg-blue-500/10" : "hover:bg-secondary/30",
+                      isSelected ? "bg-emerald-500/10" : "hover:bg-secondary/30",
                       (day + firstDay) % 7 === 0 && "border-r-0"
                     )}
                   >
                     <div className={cn(
                       "w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium mb-1",
-                      isToday ? "bg-blue-500 text-white" : "text-foreground"
+                      isToday ? "bg-emerald-500 text-white" : "text-foreground"
                     )}>
                       {day}
                     </div>
@@ -257,7 +257,7 @@ export default function CalendrierPage() {
                 {upcomingEvents.map((event) => {
                   const cfg = EVENT_TYPE_CONFIG[event.type] ?? EVENT_TYPE_CONFIG.reminder;
                   return (
-                    <div key={event.id} className="flex items-start gap-3 p-3 rounded-lg border border-border hover:border-blue-500/20 transition-colors">
+                    <div key={event.id} className="flex items-start gap-3 p-3 rounded-lg border border-border hover:border-emerald-500/20 transition-colors">
                       <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center shrink-0 text-xs", event.color || cfg.defaultColor)}>
                         {cfg.icon}
                       </div>

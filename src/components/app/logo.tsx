@@ -9,8 +9,8 @@ export function FluxiaLogo({ size = 28 }: { size?: number }) {
     >
       <defs>
         <linearGradient id="fluxia-grad" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#60a5fa" />
-          <stop offset="100%" stopColor="#2563eb" />
+          <stop offset="0%" stopColor="#34d399" />
+          <stop offset="100%" stopColor="#059669" />
         </linearGradient>
       </defs>
       <rect width="32" height="32" rx="8" fill="url(#fluxia-grad)" />

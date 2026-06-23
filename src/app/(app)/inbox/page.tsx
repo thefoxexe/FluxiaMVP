@@ -26,7 +26,7 @@ const CATEGORIES = [
 ];
 
 const CATEGORY_COLORS: Record<string, string> = {
-  prospect: "bg-blue-500/10 text-blue-400 border-blue-500/20",
+  prospect: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
   client: "bg-green-500/10 text-green-400 border-green-500/20",
   facture: "bg-yellow-500/10 text-yellow-400 border-yellow-500/20",
   urgent: "bg-red-500/10 text-red-400 border-red-500/20",
@@ -139,7 +139,7 @@ export default function InboxPage() {
                 className={cn(
                   "flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium whitespace-nowrap transition-colors shrink-0",
                   activeCategory === cat.id
-                    ? "bg-blue-500/20 text-blue-300 border border-blue-500/30"
+                    ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
                     : "bg-secondary text-muted-foreground hover:text-foreground"
                 )}
               >
@@ -178,7 +178,7 @@ export default function InboxPage() {
                     className={cn(
                       "w-full text-left p-3 hover:bg-secondary/50 transition-colors",
                       selectedEmail?.id === email.id && "bg-secondary/70",
-                      !email.is_read && "border-l-2 border-l-blue-500"
+                      !email.is_read && "border-l-2 border-l-emerald-500"
                     )}
                   >
                     <div className="flex items-start gap-2.5">
@@ -192,7 +192,7 @@ export default function InboxPage() {
                           </span>
                           <div className="flex items-center gap-1 ml-2 shrink-0">
                             {email.is_starred && <Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />}
-                            {!email.is_read && <div className="w-1.5 h-1.5 rounded-full bg-blue-400" />}
+                            {!email.is_read && <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />}
                           </div>
                         </div>
                         <div className="text-[11px] text-muted-foreground truncate mb-1">{email.subject}</div>
@@ -216,9 +216,9 @@ export default function InboxPage() {
 
           {/* Connect Email Banner */}
           {!loading && emails.length === 0 && (
-            <div className="p-3 border-t border-border bg-blue-500/5">
+            <div className="p-3 border-t border-border bg-emerald-500/5">
               <div className="flex items-start gap-2">
-                <Sparkles className="w-3.5 h-3.5 text-blue-400 shrink-0 mt-0.5" />
+                <Sparkles className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
                 <p className="text-[11px] text-muted-foreground leading-relaxed">
                   Connectez Gmail ou Outlook pour que l'IA classe et analyse vos emails automatiquement.
                 </p>
@@ -289,28 +289,28 @@ export default function InboxPage() {
 
                 {/* AI Panel */}
                 {(selectedEmail.ai_summary || aiActions(selectedEmail).length > 0 || selectedEmail.ai_draft) && (
-                  <div className="rounded-xl border border-blue-500/20 bg-gradient-to-br from-blue-500/5 to-blue-500/5 overflow-hidden">
-                    <div className="flex items-center gap-2 px-4 py-3 border-b border-blue-500/10">
-                      <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+                  <div className="rounded-xl border border-emerald-500/20 bg-gradient-to-br from-emerald-500/5 to-emerald-500/5 overflow-hidden">
+                    <div className="flex items-center gap-2 px-4 py-3 border-b border-emerald-500/10">
+                      <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center">
                         <Sparkles className="w-3.5 h-3.5 text-white" />
                       </div>
-                      <span className="text-sm font-medium text-blue-300">Analyse IA</span>
+                      <span className="text-sm font-medium text-emerald-300">Analyse IA</span>
                     </div>
                     <div className="p-4 space-y-4">
                       {selectedEmail.ai_summary && (
                         <div>
-                          <div className="text-xs font-medium text-blue-400 mb-1.5">Résumé</div>
+                          <div className="text-xs font-medium text-emerald-400 mb-1.5">Résumé</div>
                           <p className="text-sm text-muted-foreground">{selectedEmail.ai_summary}</p>
                         </div>
                       )}
                       {aiActions(selectedEmail).length > 0 && (
                         <div>
-                          <div className="text-xs font-medium text-blue-400 mb-2">Actions recommandées</div>
+                          <div className="text-xs font-medium text-emerald-400 mb-2">Actions recommandées</div>
                           <div className="space-y-1.5">
                             {aiActions(selectedEmail).map((action, i) => (
-                              <button key={i} className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground w-full text-left py-1.5 px-2 rounded-md hover:bg-blue-500/10 transition-colors">
-                                <div className="w-4 h-4 rounded-full border border-blue-500/30 flex items-center justify-center shrink-0">
-                                  <span className="text-[9px] text-blue-400">{i + 1}</span>
+                              <button key={i} className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground w-full text-left py-1.5 px-2 rounded-md hover:bg-emerald-500/10 transition-colors">
+                                <div className="w-4 h-4 rounded-full border border-emerald-500/30 flex items-center justify-center shrink-0">
+                                  <span className="text-[9px] text-emerald-400">{i + 1}</span>
                                 </div>
                                 {action}
                               </button>
@@ -321,8 +321,8 @@ export default function InboxPage() {
                       {selectedEmail.ai_draft && (
                         <div>
                           <div className="flex items-center justify-between mb-2">
-                            <div className="text-xs font-medium text-blue-400">Réponse suggérée</div>
-                            <Button variant="outline" size="sm" className="h-6 text-[10px] text-blue-400 border-blue-500/30 hover:bg-blue-500/10" onClick={handleUseDraft}>
+                            <div className="text-xs font-medium text-emerald-400">Réponse suggérée</div>
+                            <Button variant="outline" size="sm" className="h-6 text-[10px] text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/10" onClick={handleUseDraft}>
                               <Zap className="w-3 h-3" /> Utiliser
                             </Button>
                           </div>
@@ -358,7 +358,7 @@ export default function InboxPage() {
                     className="border-0 rounded-none resize-none text-sm min-h-[100px] focus-visible:ring-0"
                   />
                   <div className="px-3 py-2 border-t border-border flex items-center justify-between bg-secondary/20">
-                    <Button variant="ghost" size="sm" className="h-7 text-xs gap-1.5 text-blue-400" onClick={handleUseDraft}>
+                    <Button variant="ghost" size="sm" className="h-7 text-xs gap-1.5 text-emerald-400" onClick={handleUseDraft}>
                       <Sparkles className="w-3.5 h-3.5" />Brouillon IA
                     </Button>
                     <Button variant="gradient" size="sm" className="h-7 text-xs gap-1.5">
