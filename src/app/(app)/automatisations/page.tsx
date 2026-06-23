@@ -4,15 +4,17 @@ import React, { useState, useEffect, useTransition } from "react";
 import {
   Plus, Pause, Workflow, Zap, Mail, FileText, CreditCard,
   Bell, Users, ChevronRight, Settings2, Activity,
-  CheckCircle, Clock, AlertCircle,
+  CheckCircle, Clock, Trash2, X,
 } from "lucide-react";
 import { Header } from "@/components/app/header";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { cn, formatRelativeDate } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
+import { createAutomation, deleteAutomation } from "@/actions/automations";
 import type { Automation } from "@/lib/supabase/types";
 
 const TRIGGER_ICONS: Record<string, React.ReactNode> = {
@@ -60,9 +62,30 @@ const TEMPLATES = [
   },
 ];
 
+const TRIGGER_OPTIONS = [
+  { value: "email_categorized", label: "Email catégorisé" },
+  { value: "quote_status_changed", label: "Statut devis changé" },
+  { value: "quote_no_response", label: "Devis sans réponse" },
+  { value: "invoice_overdue", label: "Facture en retard" },
+  { value: "invoice_paid", label: "Facture payée" },
+  { value: "contact_created", label: "Nouveau contact" },
+  { value: "schedule", label: "Planifié (cron)" },
+];
+
+const ACTION_OPTIONS = [
+  { value: "send_email", label: "Envoyer un email" },
+  { value: "create_task", label: "Créer une tâche" },
+  { value: "create_invoice", label: "Créer une facture" },
+  { value: "notify", label: "Notification push" },
+  { value: "update_contact_score", label: "Mettre à jour le score" },
+];
+
 export default function AutomatisationsPage() {
   const [automations, setAutomations] = useState<Automation[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showCreate, setShowCreate] = useState(false);
+  const [creating, setCreating] = useState(false);
+  const [form, setForm] = useState({ name: "", description: "", trigger_type: "email_categorized", action_type: "send_email" });
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
@@ -72,6 +95,50 @@ export default function AutomatisationsPage() {
       setLoading(false);
     });
   }, []);
+
+  const handleCreate = async () => {
+    if (!form.name) return;
+    setCreating(true);
+    const res = await createAutomation({
+      name: form.name,
+      description: form.description || undefined,
+      trigger_type: form.trigger_type,
+      actions: [{ type: form.action_type }],
+    });
+    if (res.data) {
+      setAutomations(prev => [res.data as Automation, ...prev]);
+      setShowCreate(false);
+      setForm({ name: "", description: "", trigger_type: "email_categorized", action_type: "send_email" });
+    }
+    setCreating(false);
+  };
+
+  const handleDelete = (id: string) => {
+    setAutomations(prev => prev.filter(a => a.id !== id));
+    startTransition(async () => { await deleteAutomation(id); });
+  };
+
+  const installTemplate = async (tpl: typeof TEMPLATES[number]) => {
+    const triggerMap: Record<string, string> = {
+      "Réponse automatique aux prospects": "email_categorized",
+      "Devis → Facture automatique": "quote_status_changed",
+      "Scoring prospect hebdomadaire": "schedule",
+      "Alerte impayé > 30 jours": "invoice_overdue",
+    };
+    const actionMap: Record<string, string> = {
+      "Réponse automatique aux prospects": "send_email",
+      "Devis → Facture automatique": "create_invoice",
+      "Scoring prospect hebdomadaire": "update_contact_score",
+      "Alerte impayé > 30 jours": "notify",
+    };
+    const res = await createAutomation({
+      name: tpl.title,
+      description: tpl.description,
+      trigger_type: triggerMap[tpl.title] ?? "schedule",
+      actions: [{ type: actionMap[tpl.title] ?? "notify" }],
+    });
+    if (res.data) setAutomations(prev => [res.data as Automation, ...prev]);
+  };
 
   const toggleAutomation = (id: string) => {
     setAutomations(prev => prev.map(a => a.id === id ? { ...a, is_active: !a.is_active } : a));
@@ -123,7 +190,7 @@ export default function AutomatisationsPage() {
           <div className="lg:col-span-2 space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="text-sm font-semibold">Mes automatisations</h2>
-              <Button variant="gradient" size="sm" className="gap-2">
+              <Button variant="gradient" size="sm" className="gap-2" onClick={() => setShowCreate(true)}>
                 <Plus className="w-4 h-4" />
                 <span className="hidden sm:inline">Créer un workflow</span>
               </Button>
@@ -135,7 +202,7 @@ export default function AutomatisationsPage() {
               <div className="py-16 text-center border border-dashed border-border rounded-xl">
                 <Workflow className="w-10 h-10 text-muted-foreground/30 mx-auto mb-3" />
                 <p className="text-sm text-muted-foreground mb-4">Aucune automatisation configurée</p>
-                <Button size="sm" className="gap-1.5">
+                <Button size="sm" className="gap-1.5" onClick={() => setShowCreate(true)}>
                   <Plus className="w-3.5 h-3.5" /> Créer ma première automatisation
                 </Button>
               </div>
@@ -197,14 +264,14 @@ export default function AutomatisationsPage() {
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-3 shrink-0">
+                        <div className="flex items-center gap-2 shrink-0">
                           <Switch
                             checked={auto.is_active}
                             onCheckedChange={() => toggleAutomation(auto.id)}
                             disabled={isPending}
                           />
-                          <Button variant="ghost" size="icon" className="w-7 h-7">
-                            <Settings2 className="w-3.5 h-3.5" />
+                          <Button variant="ghost" size="icon" className="w-7 h-7 text-muted-foreground hover:text-red-400 hover:bg-red-500/10" onClick={() => handleDelete(auto.id)}>
+                            <Trash2 className="w-3.5 h-3.5" />
                           </Button>
                         </div>
                       </div>
@@ -233,7 +300,7 @@ export default function AutomatisationsPage() {
                       <p className="text-[10px] text-muted-foreground leading-relaxed">{tpl.description}</p>
                       <div className="flex items-center justify-between mt-2">
                         <Badge variant="secondary" className="text-[10px]">{tpl.complexity}</Badge>
-                        <Button variant="ghost" size="sm" className="h-6 text-[10px] text-blue-400">
+                        <Button variant="ghost" size="sm" className="h-6 text-[10px] text-blue-400" onClick={() => installTemplate(tpl)}>
                           Utiliser <ChevronRight className="w-3 h-3" />
                         </Button>
                       </div>
@@ -258,6 +325,52 @@ export default function AutomatisationsPage() {
           </div>
         </div>
       </div>
+
+      {/* Create Automation Modal */}
+      {showCreate && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setShowCreate(false)}>
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+          <div className="relative bg-card border border-border rounded-xl w-full max-w-md shadow-2xl" onClick={e => e.stopPropagation()}>
+            <div className="p-5 border-b border-border flex items-center justify-between">
+              <h2 className="font-semibold">Créer un workflow</h2>
+              <button onClick={() => setShowCreate(false)} className="text-muted-foreground hover:text-foreground p-1"><X className="w-4 h-4" /></button>
+            </div>
+            <div className="p-5 space-y-4">
+              <div>
+                <label className="text-xs font-medium block mb-1.5">Nom *</label>
+                <Input className="h-9 text-sm" placeholder="Relance devis sans réponse..." value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} />
+              </div>
+              <div>
+                <label className="text-xs font-medium block mb-1.5">Description</label>
+                <Input className="h-9 text-sm" placeholder="Description optionnelle..." value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} />
+              </div>
+              <div>
+                <label className="text-xs font-medium block mb-1.5">Déclencheur</label>
+                <select className="w-full h-9 rounded-md border border-input bg-background px-3 text-sm" value={form.trigger_type} onChange={e => setForm(f => ({ ...f, trigger_type: e.target.value }))}>
+                  {TRIGGER_OPTIONS.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="text-xs font-medium block mb-1.5">Action</label>
+                <select className="w-full h-9 rounded-md border border-input bg-background px-3 text-sm" value={form.action_type} onChange={e => setForm(f => ({ ...f, action_type: e.target.value }))}>
+                  {ACTION_OPTIONS.map(a => <option key={a.value} value={a.value}>{a.label}</option>)}
+                </select>
+              </div>
+              <div className="p-3 rounded-lg bg-blue-500/5 border border-blue-500/20 text-xs text-muted-foreground">
+                <span className="text-blue-400 font-medium">Logique :</span>{" "}
+                Quand <span className="text-foreground font-medium">{TRIGGER_OPTIONS.find(t => t.value === form.trigger_type)?.label}</span>,
+                alors <span className="text-foreground font-medium">{ACTION_OPTIONS.find(a => a.value === form.action_type)?.label}</span>.
+              </div>
+              <div className="flex gap-2 pt-2 border-t border-border">
+                <Button className="flex-1 h-9 text-sm" onClick={handleCreate} disabled={creating || !form.name}>
+                  {creating ? "Création..." : "Créer le workflow"}
+                </Button>
+                <Button variant="outline" className="h-9 text-sm" onClick={() => setShowCreate(false)}>Annuler</Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

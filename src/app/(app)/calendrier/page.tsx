@@ -1,11 +1,13 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight, Plus, Video, Phone, Clock, AlertCircle } from "lucide-react";
+import { ChevronLeft, ChevronRight, Plus, Video, Phone, Clock, AlertCircle, X, Trash2 } from "lucide-react";
 import { Header } from "@/components/app/header";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
+import { createCalendarEvent, deleteCalendarEvent } from "@/actions/calendar";
 import type { CalendarEvent, Contact } from "@/lib/supabase/types";
 
 const DAYS = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
@@ -27,6 +29,13 @@ const EVENT_TYPE_CONFIG: Record<string, { icon: React.ReactNode; defaultColor: s
   reminder: { icon: <Clock className="w-3.5 h-3.5" />, defaultColor: "text-yellow-400 bg-yellow-500/10 border-yellow-500/20" },
 };
 
+const EVENT_COLORS: Record<string, string> = {
+  meeting: "text-blue-400 bg-blue-500/10 border-blue-500/20",
+  call: "text-green-400 bg-green-500/10 border-green-500/20",
+  deadline: "text-red-400 bg-red-500/10 border-red-500/20",
+  reminder: "text-yellow-400 bg-yellow-500/10 border-yellow-500/20",
+};
+
 export default function CalendrierPage() {
   const today = new Date();
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
@@ -35,6 +44,18 @@ export default function CalendrierPage() {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showCreate, setShowCreate] = useState(false);
+  const [creating, setCreating] = useState(false);
+  const [form, setForm] = useState({
+    title: "",
+    type: "meeting" as "meeting" | "call" | "deadline" | "reminder",
+    date: new Date().toISOString().slice(0, 10),
+    start_time: "09:00",
+    end_time: "10:00",
+    location: "",
+    contact_id: "",
+    description: "",
+  });
 
   useEffect(() => {
     const supabase = createClient();
@@ -49,6 +70,33 @@ export default function CalendrierPage() {
   }, []);
 
   const contactMap = Object.fromEntries(contacts.map(c => [c.id, c.name]));
+
+  const handleCreate = async () => {
+    if (!form.title) return;
+    setCreating(true);
+    const start_at = `${form.date}T${form.start_time}:00`;
+    const end_at = `${form.date}T${form.end_time}:00`;
+    const res = await createCalendarEvent({
+      title: form.title,
+      type: form.type,
+      start_at,
+      end_at,
+      location: form.location || undefined,
+      contact_id: form.contact_id || undefined,
+      description: form.description || undefined,
+    });
+    if (res.data) {
+      setEvents(prev => [...prev, res.data as CalendarEvent]);
+      setShowCreate(false);
+      setForm({ title: "", type: "meeting", date: new Date().toISOString().slice(0, 10), start_time: "09:00", end_time: "10:00", location: "", contact_id: "", description: "" });
+    }
+    setCreating(false);
+  };
+
+  const handleDelete = async (id: string) => {
+    setEvents(prev => prev.filter(e => e.id !== id));
+    await deleteCalendarEvent(id);
+  };
 
   const prevMonth = () => {
     if (currentMonth === 0) { setCurrentMonth(11); setCurrentYear(y => y - 1); }
@@ -98,7 +146,7 @@ export default function CalendrierPage() {
                 Auj.
               </Button>
             </div>
-            <Button variant="gradient" size="sm" className="gap-2">
+            <Button variant="gradient" size="sm" className="gap-2" onClick={() => setShowCreate(true)}>
               <Plus className="w-4 h-4" />
               <span className="hidden sm:inline">Événement</span>
             </Button>
@@ -173,10 +221,11 @@ export default function CalendrierPage() {
                   {selectedDayEvents.map((event) => {
                     const cfg = EVENT_TYPE_CONFIG[event.type] ?? EVENT_TYPE_CONFIG.reminder;
                     return (
-                      <div key={event.id} className={cn("p-3 rounded-lg border text-xs", event.color || cfg.defaultColor)}>
+                      <div key={event.id} className={cn("p-3 rounded-lg border text-xs", EVENT_COLORS[event.type] ?? EVENT_COLORS.reminder)}>
                         <div className="flex items-center gap-2 mb-1">
                           {cfg.icon}
-                          <span className="font-medium">{event.title}</span>
+                          <span className="font-medium flex-1">{event.title}</span>
+                          <button onClick={() => handleDelete(event.id)} className="opacity-50 hover:opacity-100 hover:text-red-400 transition-opacity"><Trash2 className="w-3 h-3" /></button>
                         </div>
                         <div className="text-[10px] opacity-80">
                           {new Date(event.start_at).toLocaleTimeString("fr-CH", { hour: "2-digit", minute: "2-digit" })}
@@ -246,6 +295,71 @@ export default function CalendrierPage() {
           </div>
         </div>
       </div>
+
+      {/* Create Event Modal */}
+      {showCreate && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setShowCreate(false)}>
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+          <div className="relative bg-card border border-border rounded-xl w-full max-w-md shadow-2xl" onClick={e => e.stopPropagation()}>
+            <div className="p-5 border-b border-border flex items-center justify-between">
+              <h2 className="font-semibold">Nouvel événement</h2>
+              <button onClick={() => setShowCreate(false)} className="text-muted-foreground hover:text-foreground p-1"><X className="w-4 h-4" /></button>
+            </div>
+            <div className="p-5 space-y-4">
+              <div>
+                <label className="text-xs font-medium block mb-1.5">Titre *</label>
+                <Input className="h-9 text-sm" placeholder="Réunion client..." value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} />
+              </div>
+
+              <div>
+                <label className="text-xs font-medium block mb-1.5">Type</label>
+                <div className="grid grid-cols-4 gap-2">
+                  {(["meeting", "call", "deadline", "reminder"] as const).map(type => (
+                    <button key={type} onClick={() => setForm(f => ({ ...f, type }))} className={cn("py-2 rounded-lg border text-xs font-medium transition-colors capitalize", form.type === type ? EVENT_COLORS[type] : "border-border text-muted-foreground hover:bg-secondary")}>
+                      {type === "meeting" ? "Réunion" : type === "call" ? "Appel" : type === "deadline" ? "Deadline" : "Rappel"}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-3">
+                <div className="col-span-1">
+                  <label className="text-xs font-medium block mb-1.5">Date</label>
+                  <Input type="date" className="h-9 text-sm" value={form.date} onChange={e => setForm(f => ({ ...f, date: e.target.value }))} />
+                </div>
+                <div>
+                  <label className="text-xs font-medium block mb-1.5">Début</label>
+                  <Input type="time" className="h-9 text-sm" value={form.start_time} onChange={e => setForm(f => ({ ...f, start_time: e.target.value }))} />
+                </div>
+                <div>
+                  <label className="text-xs font-medium block mb-1.5">Fin</label>
+                  <Input type="time" className="h-9 text-sm" value={form.end_time} onChange={e => setForm(f => ({ ...f, end_time: e.target.value }))} />
+                </div>
+              </div>
+
+              <div>
+                <label className="text-xs font-medium block mb-1.5">Contact (optionnel)</label>
+                <select className="w-full h-9 rounded-md border border-input bg-background px-3 text-sm" value={form.contact_id} onChange={e => setForm(f => ({ ...f, contact_id: e.target.value }))}>
+                  <option value="">— Aucun contact —</option>
+                  {contacts.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                </select>
+              </div>
+
+              <div>
+                <label className="text-xs font-medium block mb-1.5">Lieu (optionnel)</label>
+                <Input className="h-9 text-sm" placeholder="Zoom, bureau, adresse..." value={form.location} onChange={e => setForm(f => ({ ...f, location: e.target.value }))} />
+              </div>
+
+              <div className="flex gap-2 pt-2 border-t border-border">
+                <Button className="flex-1 h-9 text-sm" onClick={handleCreate} disabled={creating || !form.title}>
+                  {creating ? "Création..." : "Créer l'événement"}
+                </Button>
+                <Button variant="outline" className="h-9 text-sm" onClick={() => setShowCreate(false)}>Annuler</Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
